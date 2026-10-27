@@ -105,3 +105,5 @@ archive/city_hour.csv
 # Model Artifacts (aqi_model.pkl is ~78 MB)
 # Uncomment the line below if using Git LFS or external model storage:
 # *.pkl
+
+*.env
