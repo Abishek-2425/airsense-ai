@@ -1,0 +1,1099 @@
+{
+  "project": "AirSense AI - Candidate Model Improvement Cycle",
+  "created_at": "2026-10-28T07:02:43.389634",
+  "feature_columns": [
+    "PM2.5",
+    "PM10",
+    "NO2",
+    "CO",
+    "SO2",
+    "O3"
+  ],
+  "target_column": "Target_AQI",
+  "split_policy": {
+    "train_date_max": "2019-12-04",
+    "embargo_date": "2019-12-05",
+    "test_date_min": "2019-12-06",
+    "embargo_explanation": "1-day temporal embargo buffer prevents day t+1 training target from overlapping test period."
+  },
+  "sample_counts": {
+    "train_samples": 19859,
+    "embargo_samples": 22,
+    "test_samples": 4968,
+    "matched_test_samples": 4900
+  },
+  "evaluation_results": {
+    "overall_all": {
+      "candidate": {
+        "r2": 0.8330380174553926,
+        "rmse": 36.77379896843126,
+        "mae": 20.448567260001138,
+        "samples": 4968
+      },
+      "current": {
+        "r2": 0.8303525757140013,
+        "rmse": 37.068356932492314,
+        "mae": 20.315010630897103,
+        "samples": 4968
+      }
+    },
+    "overall_matched": {
+      "candidate": {
+        "r2": 0.8378332593677075,
+        "rmse": 36.33636242322733,
+        "mae": 20.24965119985457,
+        "samples": 4900
+      },
+      "current": {
+        "r2": 0.8366676337301702,
+        "rmse": 36.46671824846097,
+        "mae": 20.10209581082183,
+        "samples": 4900
+      },
+      "persistence": {
+        "r2": 0.7723305984950792,
+        "rmse": 43.05393864274279,
+        "mae": 20.90612244897959,
+        "samples": 4900
+      }
+    },
+    "lockdown_breakdown": {
+      "pre_lockdown": {
+        "date_range": "2019-12-06 to 2020-03-23",
+        "total_samples": 2540,
+        "matched_samples": 2507,
+        "mean_actual_aqi": 158.0248031496063,
+        "candidate_all": {
+          "r2": 0.8182828982860635,
+          "rmse": 45.785639544979645,
+          "mae": 25.43430287525248,
+          "samples": 2540
+        },
+        "current_all": {
+          "r2": 0.8189813853866087,
+          "rmse": 45.697559035556885,
+          "mae": 24.90343785170429,
+          "samples": 2540
+        },
+        "candidate_matched": {
+          "r2": 0.8195831242837424,
+          "rmse": 45.7394818873301,
+          "mae": 25.316602056709854,
+          "samples": 2507
+        },
+        "current_matched": {
+          "r2": 0.8199088821864384,
+          "rmse": 45.698169982579834,
+          "mae": 24.79422439569029,
+          "samples": 2507
+        },
+        "persistence_matched": {
+          "r2": 0.7251387373953648,
+          "rmse": 56.455912390795206,
+          "mae": 29.696848823294776,
+          "samples": 2507
+        }
+      },
+      "in_lockdown": {
+        "date_range": "2020-03-24 to 2020-06-30",
+        "total_samples": 2428,
+        "matched_samples": 2393,
+        "mean_actual_aqi": 84.10914332784185,
+        "candidate_all": {
+          "r2": 0.6645292940403704,
+          "rmse": 23.957871597302116,
+          "mae": 15.232847135314808,
+          "samples": 2428
+        },
+        "current_all": {
+          "r2": 0.6335909540832633,
+          "rmse": 25.038253098414685,
+          "mae": 15.514926141255321,
+          "samples": 2428
+        },
+        "candidate_matched": {
+          "r2": 0.6981099848268677,
+          "rmse": 22.62290883196731,
+          "mae": 14.941316140040023,
+          "samples": 2393
+        },
+        "current_matched": {
+          "r2": 0.6843129858446648,
+          "rmse": 23.134090461030404,
+          "mae": 15.186439161316931,
+          "samples": 2393
+        },
+        "persistence_matched": {
+          "r2": 0.7307385665082198,
+          "rmse": 21.365405877826873,
+          "mae": 11.696615127455077,
+          "samples": 2393
+        }
+      }
+    },
+    "city_metrics": {
+      "Ahmedabad": {
+        "train_samples": 1132,
+        "test_samples": 201,
+        "matched_samples": 197,
+        "mean_actual_aqi": 250.9900497512438,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.6490127020602035,
+          "rmse": 129.10503802697832,
+          "mae": 76.20316823171301,
+          "samples": 201
+        },
+        "current": {
+          "r2": 0.6323141894008651,
+          "rmse": 132.14049372653406,
+          "mae": 76.48691071697786,
+          "samples": 201
+        },
+        "candidate_matched": {
+          "r2": 0.6630239758528664,
+          "rmse": 127.46717042676026,
+          "mae": 75.08765690260107,
+          "samples": 197
+        },
+        "current_matched": {
+          "r2": 0.6533059857156176,
+          "rmse": 129.29210792983014,
+          "mae": 75.05194447740641,
+          "samples": 197
+        },
+        "persistence": {
+          "r2": 0.510356180428396,
+          "rmse": 153.65227074328752,
+          "mae": 80.73604060913705,
+          "samples": 197
+        }
+      },
+      "Aizawl": {
+        "train_samples": 0,
+        "test_samples": 111,
+        "matched_samples": 109,
+        "mean_actual_aqi": 34.765765765765764,
+        "status_tag": "Zero-Training City",
+        "candidate": {
+          "r2": 0.3352608347882843,
+          "rmse": 16.208305571137096,
+          "mae": 12.462381618631621,
+          "samples": 111
+        },
+        "current": {
+          "r2": 0.41187286619385444,
+          "rmse": 15.245707746678436,
+          "mae": 10.995749388999386,
+          "samples": 111
+        },
+        "candidate_matched": {
+          "r2": 0.3957834446738593,
+          "rmse": 15.496687447469872,
+          "mae": 12.048731346889609,
+          "samples": 109
+        },
+        "current_matched": {
+          "r2": 0.4085404329366624,
+          "rmse": 15.332221828701883,
+          "mae": 11.032497848736378,
+          "samples": 109
+        },
+        "persistence": {
+          "r2": 0.8347271952584129,
+          "rmse": 8.10481791248239,
+          "mae": 5.2110091743119265,
+          "samples": 109
+        }
+      },
+      "Amaravati": {
+        "train_samples": 632,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 66.2451923076923,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.6979938411723237,
+          "rmse": 17.574663758396277,
+          "mae": 14.159126262626264,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.6737770398748506,
+          "rmse": 18.26570280169427,
+          "mae": 14.476323985042733,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.6979938411723237,
+          "rmse": 17.574663758396277,
+          "mae": 14.159126262626264,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.6737770398748506,
+          "rmse": 18.265702801694275,
+          "mae": 14.476323985042733,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.7025147246336603,
+          "rmse": 17.442625728590645,
+          "mae": 10.774038461538462,
+          "samples": 208
+        }
+      },
+      "Amritsar": {
+        "train_samples": 926,
+        "test_samples": 199,
+        "matched_samples": 196,
+        "mean_actual_aqi": 98.31155778894473,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.40642236066983317,
+          "rmse": 39.040266128373524,
+          "mae": 22.161924481715943,
+          "samples": 199
+        },
+        "current": {
+          "r2": 0.4302885290183045,
+          "rmse": 38.24736191164669,
+          "mae": 21.400517073099987,
+          "samples": 199
+        },
+        "candidate_matched": {
+          "r2": 0.40302052048494397,
+          "rmse": 39.30667366123631,
+          "mae": 22.329049662072624,
+          "samples": 196
+        },
+        "current_matched": {
+          "r2": 0.4273572192120073,
+          "rmse": 38.49714178554879,
+          "mae": 21.527228502223398,
+          "samples": 196
+        },
+        "persistence": {
+          "r2": 0.05449374070181656,
+          "rmse": 49.46736710360948,
+          "mae": 25.091836734693878,
+          "samples": 196
+        }
+      },
+      "Bengaluru": {
+        "train_samples": 1701,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 79.98076923076923,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.5289886304090905,
+          "rmse": 12.734703118798503,
+          "mae": 10.036978077478079,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.5860096662633167,
+          "rmse": 11.939007636467727,
+          "mae": 9.346541669334936,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.5289886304090907,
+          "rmse": 12.7347031187985,
+          "mae": 10.036978077478079,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.5860096662633165,
+          "rmse": 11.93900763646773,
+          "mae": 9.346541669334938,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.6926661131441547,
+          "rmse": 10.28675399201846,
+          "mae": 7.644230769230769,
+          "samples": 208
+        }
+      },
+      "Bhopal": {
+        "train_samples": 79,
+        "test_samples": 198,
+        "matched_samples": 197,
+        "mean_actual_aqi": 123.62121212121212,
+        "status_tag": "Sparse Training Data (<100)",
+        "candidate": {
+          "r2": 0.778375527831086,
+          "rmse": 22.986182723966266,
+          "mae": 16.63040323509263,
+          "samples": 198
+        },
+        "current": {
+          "r2": 0.7655042436788198,
+          "rmse": 23.644247209762195,
+          "mae": 17.100418736426313,
+          "samples": 198
+        },
+        "candidate_matched": {
+          "r2": 0.7786253469680094,
+          "rmse": 23.019992628794956,
+          "mae": 16.639199255059665,
+          "samples": 197
+        },
+        "current_matched": {
+          "r2": 0.7656316701523523,
+          "rmse": 23.685943885611472,
+          "mae": 17.120985824525164,
+          "samples": 197
+        },
+        "persistence": {
+          "r2": 0.6194097233547144,
+          "rmse": 30.183533346498514,
+          "mae": 19.17766497461929,
+          "samples": 197
+        }
+      },
+      "Brajrajnagar": {
+        "train_samples": 566,
+        "test_samples": 146,
+        "matched_samples": 133,
+        "mean_actual_aqi": 138.2876712328767,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.5785174922950086,
+          "rmse": 33.21052021762852,
+          "mae": 24.10737763872353,
+          "samples": 146
+        },
+        "current": {
+          "r2": 0.7067938822018821,
+          "rmse": 27.69953093293923,
+          "mae": 21.244142830533246,
+          "samples": 146
+        },
+        "candidate_matched": {
+          "r2": 0.5951467826803309,
+          "rmse": 31.43895584165069,
+          "mae": 22.30618343728118,
+          "samples": 133
+        },
+        "current_matched": {
+          "r2": 0.7537298726430974,
+          "rmse": 24.52026637109084,
+          "mae": 18.961346312835037,
+          "samples": 133
+        },
+        "persistence": {
+          "r2": 0.3507172040944666,
+          "rmse": 39.814041426823806,
+          "mae": 29.157894736842106,
+          "samples": 133
+        }
+      },
+      "Chandigarh": {
+        "train_samples": 91,
+        "test_samples": 207,
+        "matched_samples": 206,
+        "mean_actual_aqi": 78.93236714975845,
+        "status_tag": "Sparse Training Data (<100)",
+        "candidate": {
+          "r2": 0.7873905865564745,
+          "rmse": 17.688819908602454,
+          "mae": 12.430538366759379,
+          "samples": 207
+        },
+        "current": {
+          "r2": 0.7849263661846614,
+          "rmse": 17.791034511513864,
+          "mae": 11.979999360408781,
+          "samples": 207
+        },
+        "candidate_matched": {
+          "r2": 0.7877576862895038,
+          "rmse": 17.69964398822193,
+          "mae": 12.416625353745497,
+          "samples": 206
+        },
+        "current_matched": {
+          "r2": 0.7852548357723321,
+          "rmse": 17.803698940761798,
+          "mae": 11.965556511719132,
+          "samples": 206
+        },
+        "persistence": {
+          "r2": 0.4941813383266692,
+          "rmse": 27.32410650170477,
+          "mae": 16.57766990291262,
+          "samples": 206
+        }
+      },
+      "Chennai": {
+        "train_samples": 1675,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 80.45673076923077,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": -0.12268139499268282,
+          "rmse": 24.2732307324184,
+          "mae": 16.420020349442225,
+          "samples": 208
+        },
+        "current": {
+          "r2": -0.45087219113337484,
+          "rmse": 27.593951694184575,
+          "mae": 18.280819735819737,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": -0.12268139499268282,
+          "rmse": 24.2732307324184,
+          "mae": 16.420020349442225,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": -0.4508721911333746,
+          "rmse": 27.59395169418457,
+          "mae": 18.280819735819737,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.4007582140108087,
+          "rmse": 17.733741199281017,
+          "mae": 11.245192307692308,
+          "samples": 208
+        }
+      },
+      "Coimbatore": {
+        "train_samples": 163,
+        "test_samples": 180,
+        "matched_samples": 169,
+        "mean_actual_aqi": 68.83888888888889,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.0032456708017335467,
+          "rmse": 20.175308125964108,
+          "mae": 17.17351911175244,
+          "samples": 180
+        },
+        "current": {
+          "r2": -0.005129187212931541,
+          "rmse": 20.259888599875413,
+          "mae": 17.98492453102453,
+          "samples": 180
+        },
+        "candidate_matched": {
+          "r2": 0.025428994951548045,
+          "rmse": 20.042215091911174,
+          "mae": 17.119192290615363,
+          "samples": 169
+        },
+        "current_matched": {
+          "r2": 0.023745790430768077,
+          "rmse": 20.059515315931844,
+          "mae": 17.784319449780988,
+          "samples": 169
+        },
+        "persistence": {
+          "r2": 0.7703891342444761,
+          "rmse": 9.72826054618388,
+          "mae": 7.053254437869822,
+          "samples": 169
+        }
+      },
+      "Delhi": {
+        "train_samples": 1789,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 203.04807692307693,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.902877010871093,
+          "rmse": 33.405592074576816,
+          "mae": 24.627943624084253,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.898463303994562,
+          "rmse": 34.156209380838476,
+          "mae": 25.175815756892682,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.902877010871093,
+          "rmse": 33.405592074576816,
+          "mae": 24.627943624084253,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.898463303994562,
+          "rmse": 34.15620938083848,
+          "mae": 25.175815756892685,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8333302313361661,
+          "rmse": 43.760932699946316,
+          "mae": 32.30769230769231,
+          "samples": 208
+        }
+      },
+      "Ernakulam": {
+        "train_samples": 0,
+        "test_samples": 153,
+        "matched_samples": 148,
+        "mean_actual_aqi": 92.359477124183,
+        "status_tag": "Zero-Training City",
+        "candidate": {
+          "r2": 0.22132127750054886,
+          "rmse": 17.052396557677707,
+          "mae": 12.194187939148724,
+          "samples": 153
+        },
+        "current": {
+          "r2": 0.2594737722641739,
+          "rmse": 16.629396646625256,
+          "mae": 12.144367647058825,
+          "samples": 153
+        },
+        "candidate_matched": {
+          "r2": 0.2440479535327824,
+          "rmse": 16.37848742187268,
+          "mae": 11.949007512382517,
+          "samples": 148
+        },
+        "current_matched": {
+          "r2": 0.29421055676567676,
+          "rmse": 15.825748039199524,
+          "mae": 11.875353040540544,
+          "samples": 148
+        },
+        "persistence": {
+          "r2": 0.725698388493085,
+          "rmse": 9.865994011646157,
+          "mae": 6.756756756756757,
+          "samples": 148
+        }
+      },
+      "Gurugram": {
+        "train_samples": 1244,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 174.77884615384616,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8174669509740706,
+          "rmse": 35.22431621392606,
+          "mae": 25.983938771298146,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8224135780816905,
+          "rmse": 34.74375033245835,
+          "mae": 25.454856020715397,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8174669509740706,
+          "rmse": 35.22431621392606,
+          "mae": 25.983938771298146,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8224135780816905,
+          "rmse": 34.74375033245835,
+          "mae": 25.454856020715397,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.7411500947044725,
+          "rmse": 41.94650897732272,
+          "mae": 29.35576923076923,
+          "samples": 208
+        }
+      },
+      "Guwahati": {
+        "train_samples": 286,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 177.14423076923077,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.9023683090527316,
+          "rmse": 36.723666746634144,
+          "mae": 25.595395011238757,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.9065761000213997,
+          "rmse": 35.92358151774334,
+          "mae": 25.011878345612722,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.9023683090527316,
+          "rmse": 36.72366674663414,
+          "mae": 25.59539501123876,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.9065761000213997,
+          "rmse": 35.92358151774334,
+          "mae": 25.011878345612725,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8132606310161629,
+          "rmse": 50.78887294855651,
+          "mae": 32.56730769230769,
+          "samples": 208
+        }
+      },
+      "Hyderabad": {
+        "train_samples": 1671,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 84.5625,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8796665758839168,
+          "rmse": 10.961407479309905,
+          "mae": 8.559052768412146,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8807620881321249,
+          "rmse": 10.911397216991968,
+          "mae": 8.583095030370272,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8796665758839168,
+          "rmse": 10.961407479309905,
+          "mae": 8.559052768412146,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8807620881321249,
+          "rmse": 10.911397216991967,
+          "mae": 8.583095030370272,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8169458575772759,
+          "rmse": 13.519572706037945,
+          "mae": 9.807692307692308,
+          "samples": 208
+        }
+      },
+      "Jaipur": {
+        "train_samples": 885,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 108.23557692307692,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.5909383579280685,
+          "rmse": 17.31137729418331,
+          "mae": 13.104182770354644,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.5755740555111183,
+          "rmse": 17.63348712015085,
+          "mae": 13.449292173104674,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.5909383579280685,
+          "rmse": 17.31137729418331,
+          "mae": 13.104182770354644,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.5755740555111183,
+          "rmse": 17.63348712015085,
+          "mae": 13.449292173104677,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.4252788204251554,
+          "rmse": 20.519456058167744,
+          "mae": 13.788461538461538,
+          "samples": 208
+        }
+      },
+      "Jorapokhar": {
+        "train_samples": 583,
+        "test_samples": 187,
+        "matched_samples": 184,
+        "mean_actual_aqi": 152.13903743315507,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.5721945098351273,
+          "rmse": 29.854885260064098,
+          "mae": 21.493092815235862,
+          "samples": 187
+        },
+        "current": {
+          "r2": 0.5948021528292868,
+          "rmse": 29.0553287846656,
+          "mae": 21.19986145212482,
+          "samples": 187
+        },
+        "candidate_matched": {
+          "r2": 0.582843704165031,
+          "rmse": 29.641637317825403,
+          "mae": 21.28030997293769,
+          "samples": 184
+        },
+        "current_matched": {
+          "r2": 0.6059549451755617,
+          "rmse": 28.808837154956123,
+          "mae": 20.89913791990015,
+          "samples": 184
+        },
+        "persistence": {
+          "r2": 0.36959503852605935,
+          "rmse": 36.43867689575245,
+          "mae": 26.168478260869566,
+          "samples": 184
+        }
+      },
+      "Kochi": {
+        "train_samples": 0,
+        "test_samples": 158,
+        "matched_samples": 155,
+        "mean_actual_aqi": 104.28481012658227,
+        "status_tag": "Zero-Training City",
+        "candidate": {
+          "r2": 0.24007651881798653,
+          "rmse": 29.587062307127358,
+          "mae": 18.32547257383966,
+          "samples": 158
+        },
+        "current": {
+          "r2": 0.2616630417063701,
+          "rmse": 29.163807184770004,
+          "mae": 18.334124018211043,
+          "samples": 158
+        },
+        "candidate_matched": {
+          "r2": 0.22741529391494508,
+          "rmse": 29.83768609885016,
+          "mae": 18.51024723502304,
+          "samples": 155
+        },
+        "current_matched": {
+          "r2": 0.2561846476382005,
+          "rmse": 29.276870813549888,
+          "mae": 18.352117995624447,
+          "samples": 155
+        },
+        "persistence": {
+          "r2": 0.5462565658741636,
+          "rmse": 22.866371984683873,
+          "mae": 11.4,
+          "samples": 155
+        }
+      },
+      "Kolkata": {
+        "train_samples": 545,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 128.23076923076923,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8809493654197368,
+          "rmse": 27.68459980896511,
+          "mae": 19.883164058564297,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8873018961962268,
+          "rmse": 26.935850758275127,
+          "mae": 19.439395472582977,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8809493654197368,
+          "rmse": 27.684599808965118,
+          "mae": 19.883164058564297,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8873018961962268,
+          "rmse": 26.935850758275123,
+          "mae": 19.439395472582977,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8246294944009985,
+          "rmse": 33.60088139869594,
+          "mae": 22.240384615384617,
+          "samples": 208
+        }
+      },
+      "Lucknow": {
+        "train_samples": 1684,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 173.51442307692307,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8495142352617178,
+          "rmse": 36.32131283707748,
+          "mae": 28.649572556049723,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8441481883283481,
+          "rmse": 36.96321644992189,
+          "mae": 29.153472774154263,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8495142352617178,
+          "rmse": 36.32131283707748,
+          "mae": 28.649572556049723,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8441481883283481,
+          "rmse": 36.96321644992189,
+          "mae": 29.153472774154274,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.7675325346632633,
+          "rmse": 45.1434678808318,
+          "mae": 33.5,
+          "samples": 208
+        }
+      },
+      "Mumbai": {
+        "train_samples": 566,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 114.00961538461539,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8918981693338823,
+          "rmse": 19.4033121511705,
+          "mae": 12.93970705696547,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8938523860907976,
+          "rmse": 19.227130066079273,
+          "mae": 12.843491160548849,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8918981693338823,
+          "rmse": 19.4033121511705,
+          "mae": 12.93970705696547,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8938523860907976,
+          "rmse": 19.227130066079273,
+          "mae": 12.843491160548853,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8148648636810144,
+          "rmse": 25.392401195269787,
+          "mae": 16.1875,
+          "samples": 208
+        }
+      },
+      "Patna": {
+        "train_samples": 1250,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 185.11057692307693,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.8180851413553571,
+          "rmse": 38.82738165069362,
+          "mae": 28.754744182900428,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.8217904998333724,
+          "rmse": 38.42991678116956,
+          "mae": 28.267720014360634,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.8180851413553571,
+          "rmse": 38.82738165069362,
+          "mae": 28.754744182900428,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.8217904998333724,
+          "rmse": 38.42991678116956,
+          "mae": 28.267720014360634,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.8495943517488664,
+          "rmse": 35.30498984127184,
+          "mae": 24.25,
+          "samples": 208
+        }
+      },
+      "Shillong": {
+        "train_samples": 63,
+        "test_samples": 142,
+        "matched_samples": 138,
+        "mean_actual_aqi": 57.929577464788736,
+        "status_tag": "Sparse Training Data (<100)",
+        "candidate": {
+          "r2": 0.7476236481207915,
+          "rmse": 15.78147987752518,
+          "mae": 12.61302919283377,
+          "samples": 142
+        },
+        "current": {
+          "r2": 0.7631586818380096,
+          "rmse": 15.288051305691653,
+          "mae": 11.764531428469812,
+          "samples": 142
+        },
+        "candidate_matched": {
+          "r2": 0.750339240527847,
+          "rmse": 15.723174495014874,
+          "mae": 12.51936466633206,
+          "samples": 138
+        },
+        "current_matched": {
+          "r2": 0.7655358928349068,
+          "rmse": 15.237133574404472,
+          "mae": 11.624561526235441,
+          "samples": 138
+        },
+        "persistence": {
+          "r2": 0.7583825245984608,
+          "rmse": 15.4678254188624,
+          "mae": 11.471014492753623,
+          "samples": 138
+        }
+      },
+      "Talcher": {
+        "train_samples": 517,
+        "test_samples": 180,
+        "matched_samples": 167,
+        "mean_actual_aqi": 172.36111111111111,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.9002835137217159,
+          "rmse": 29.552588784349698,
+          "mae": 20.84585783429533,
+          "samples": 180
+        },
+        "current": {
+          "r2": 0.8931379012827012,
+          "rmse": 30.59312892956258,
+          "mae": 21.971821436588108,
+          "samples": 180
+        },
+        "candidate_matched": {
+          "r2": 0.9249273980733337,
+          "rmse": 25.885842641958277,
+          "mae": 19.135828447002094,
+          "samples": 167
+        },
+        "current_matched": {
+          "r2": 0.9134510651069773,
+          "rmse": 27.794088529546176,
+          "mae": 20.572398782521542,
+          "samples": 167
+        },
+        "persistence": {
+          "r2": 0.8736886820974981,
+          "rmse": 33.577063029345595,
+          "mae": 22.137724550898202,
+          "samples": 167
+        }
+      },
+      "Thiruvananthapuram": {
+        "train_samples": 843,
+        "test_samples": 208,
+        "matched_samples": 208,
+        "mean_actual_aqi": 69.60096153846153,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.2321897193762038,
+          "rmse": 18.574304025005237,
+          "mae": 11.673850718725719,
+          "samples": 208
+        },
+        "current": {
+          "r2": 0.2842518573738041,
+          "rmse": 17.933526681179032,
+          "mae": 10.866758697899321,
+          "samples": 208
+        },
+        "candidate_matched": {
+          "r2": 0.23218971937620414,
+          "rmse": 18.57430402500523,
+          "mae": 11.673850718725715,
+          "samples": 208
+        },
+        "current_matched": {
+          "r2": 0.2842518573738042,
+          "rmse": 17.933526681179032,
+          "mae": 10.866758697899321,
+          "samples": 208
+        },
+        "persistence": {
+          "r2": 0.41947454821538466,
+          "rmse": 16.150881138144182,
+          "mae": 7.677884615384615,
+          "samples": 208
+        }
+      },
+      "Visakhapatnam": {
+        "train_samples": 968,
+        "test_samples": 202,
+        "matched_samples": 197,
+        "mean_actual_aqi": 88.50990099009901,
+        "status_tag": "Normal",
+        "candidate": {
+          "r2": 0.6430154816063988,
+          "rmse": 23.7330739191496,
+          "mae": 18.202778015301526,
+          "samples": 202
+        },
+        "current": {
+          "r2": 0.6664373580299118,
+          "rmse": 22.941298898981486,
+          "mae": 17.47408674438872,
+          "samples": 202
+        },
+        "candidate_matched": {
+          "r2": 0.6475263417701189,
+          "rmse": 23.64201126557162,
+          "mae": 18.114178955984794,
+          "samples": 197
+        },
+        "current_matched": {
+          "r2": 0.6660993561929414,
+          "rmse": 23.01069389578802,
+          "mae": 17.50238378527845,
+          "samples": 197
+        },
+        "persistence": {
+          "r2": 0.550451828127418,
+          "rmse": 26.69987357144158,
+          "mae": 18.497461928934012,
+          "samples": 197
+        }
+      }
+    }
+  }
+}
