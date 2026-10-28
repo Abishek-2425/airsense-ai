@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { NavTab, HealthResponse, ModelInfoResponse, ExampleResponse } from './types';
+import type { NavTab, HealthResponse, ModelInfoResponse, ExampleResponse, MethodologySection, FormState } from './types';
 import { api } from './services/api';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './pages/Dashboard';
 import { PredictPage } from './pages/PredictPage';
-import { ModelInsightsPage } from './pages/ModelInsightsPage';
-import { HistoricalExamplePage } from './pages/HistoricalExamplePage';
-import { AboutPage } from './pages/AboutPage';
+import { ModelMethodologyPage } from './pages/ModelMethodologyPage';
 import { Wind, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
+  const [methodologySection, setMethodologySection] = useState<MethodologySection | 'all'>('performance');
+  const [prefillValues, setPrefillValues] = useState<FormState | null>(null);
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
   const [modelInfo, setModelInfo] = useState<ModelInfoResponse | null>(null);
@@ -69,12 +69,42 @@ export const App: React.FC = () => {
     fetchExample();
   }, [fetchHealth, fetchModelInfo, fetchExample]);
 
+  const handleNavigate = (tab: NavTab, section?: MethodologySection | 'all') => {
+    if (section) {
+      setMethodologySection(section);
+    }
+    setCurrentTab(tab);
+  };
+
+  const handleUseExampleInPredictor = () => {
+    if (example?.input_values) {
+      setPrefillValues({
+        pm25: example.input_values.pm25.toString(),
+        pm10: example.input_values.pm10.toString(),
+        no2: example.input_values.no2.toString(),
+        co: example.input_values.co.toString(),
+        so2: example.input_values.so2.toString(),
+        o3: example.input_values.o3.toString(),
+      });
+    } else {
+      setPrefillValues({
+        pm25: '33.17',
+        pm10: '108.22',
+        no2: '42.45',
+        co: '0.73',
+        so2: '13.65',
+        o3: '34.85',
+      });
+    }
+    setCurrentTab('predict');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans">
       {/* Top Navigation */}
       <Navbar
         currentTab={currentTab}
-        onTabChange={setCurrentTab}
+        onTabChange={(tab) => handleNavigate(tab)}
         health={health}
         healthLoading={healthLoading}
         onRefreshHealth={fetchHealth}
@@ -103,7 +133,7 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentTab === 'dashboard' && (
           <Dashboard
-            onNavigate={setCurrentTab}
+            onNavigate={handleNavigate}
             modelInfo={modelInfo}
             example={example}
           />
@@ -113,27 +143,21 @@ export const App: React.FC = () => {
           <PredictPage
             modelInfo={modelInfo}
             example={example}
+            prefilledValues={prefillValues}
           />
         )}
 
-        {currentTab === 'model-info' && (
-          <ModelInsightsPage
+        {currentTab === 'model-methodology' && (
+          <ModelMethodologyPage
             modelInfo={modelInfo}
-            loading={modelInfoLoading}
-            onRefresh={fetchModelInfo}
-          />
-        )}
-
-        {currentTab === 'example' && (
-          <HistoricalExamplePage
             example={example}
-            loading={exampleLoading}
-            onNavigateToPredict={() => setCurrentTab('predict')}
-            onRefresh={fetchExample}
+            loading={modelInfoLoading || exampleLoading}
+            onRefreshModelInfo={fetchModelInfo}
+            onRefreshExample={fetchExample}
+            onUseExampleInPredictor={handleUseExampleInPredictor}
+            initialSection={methodologySection}
           />
         )}
-
-        {currentTab === 'about' && <AboutPage />}
       </main>
 
       {/* Professional Footer */}

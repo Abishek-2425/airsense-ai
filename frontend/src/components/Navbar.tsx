@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wind, Activity, BarChart3, History, Info, Menu, X, RefreshCw, AlertCircle } from 'lucide-react';
+import { Wind, Activity, Layers, Menu, X, RefreshCw, AlertCircle } from 'lucide-react';
 import type { NavTab, HealthResponse } from '../types';
 
 interface NavbarProps {
@@ -19,12 +19,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Exactly three main navigation items
   const navItems = [
     { id: 'dashboard' as NavTab, label: 'Dashboard', icon: Activity },
     { id: 'predict' as NavTab, label: 'Predict AQI', icon: Wind },
-    { id: 'model-info' as NavTab, label: 'Model Insights', icon: BarChart3 },
-    { id: 'example' as NavTab, label: 'Historical Example', icon: History },
-    { id: 'about' as NavTab, label: 'About & Method', icon: Info },
+    { id: 'model-methodology' as NavTab, label: 'Model & Methodology', icon: Layers },
   ];
 
   const handleNavClick = (tab: NavTab) => {
@@ -54,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - 3 Main Items */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -63,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
                     isActive
                       ? 'bg-teal-50 text-teal-800 font-semibold shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -126,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu Dropdown - 3 Items */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg">
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">

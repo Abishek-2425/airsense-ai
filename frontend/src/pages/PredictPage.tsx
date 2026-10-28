@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Wind,
   Sparkles,
@@ -9,22 +9,14 @@ import {
   Activity,
   Info
 } from 'lucide-react';
-import type { PredictRequest, PredictResponse, ModelInfoResponse, ExampleResponse } from '../types';
+import type { PredictRequest, PredictResponse, ModelInfoResponse, ExampleResponse, FormState } from '../types';
 import { api } from '../services/api';
 import { AqiScale, getCategoryStyles } from '../components/AqiScale';
 
 interface PredictPageProps {
   modelInfo: ModelInfoResponse | null;
   example: ExampleResponse | null;
-}
-
-interface FormState {
-  pm25: string;
-  pm10: string;
-  no2: string;
-  co: string;
-  so2: string;
-  o3: string;
+  prefilledValues?: FormState | null;
 }
 
 interface FormErrors {
@@ -45,12 +37,20 @@ const DEFAULT_EXAMPLE: FormState = {
   o3: '34.85',
 };
 
-export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example }) => {
-  const [formData, setFormData] = useState<FormState>(DEFAULT_EXAMPLE);
+export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, prefilledValues }) => {
+  const [formData, setFormData] = useState<FormState>(prefilledValues || DEFAULT_EXAMPLE);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [result, setResult] = useState<PredictResponse | null>(null);
+
+  useEffect(() => {
+    if (prefilledValues) {
+      setFormData(prefilledValues);
+      setErrors({});
+      setApiError(null);
+    }
+  }, [prefilledValues]);
 
   const trainingMaxima = modelInfo?.training_maxima || {
     'PM2.5': 949.99,

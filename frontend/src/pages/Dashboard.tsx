@@ -11,11 +11,11 @@ import {
   BarChart2,
   Wind
 } from 'lucide-react';
-import type { NavTab, ModelInfoResponse, ExampleResponse } from '../types';
+import type { NavTab, MethodologySection, ModelInfoResponse, ExampleResponse } from '../types';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 
 interface DashboardProps {
-  onNavigate: (tab: NavTab) => void;
+  onNavigate: (tab: NavTab, section?: MethodologySection) => void;
   modelInfo: ModelInfoResponse | null;
   example: ExampleResponse | null;
 }
@@ -75,11 +75,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => onNavigate('model-info')}
+              onClick={() => onNavigate('model-methodology', 'performance')}
               className="inline-flex items-center gap-2 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-medium px-4 py-2.5 rounded-xl transition-colors cursor-pointer"
             >
               <BarChart2 className="w-4 h-4 text-teal-400" />
-              <span>Model Insights</span>
+              <span>Model &amp; Methodology</span>
             </button>
           </div>
         </div>
@@ -170,7 +170,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </p>
             </div>
             <button
-              onClick={() => onNavigate('model-info')}
+              onClick={() => onNavigate('model-methodology', 'performance')}
               className="text-xs font-semibold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer"
             >
               <span>Deep Dive</span>
@@ -268,7 +268,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           <div className="pt-2 flex justify-end">
             <button
-              onClick={() => onNavigate('example')}
+              onClick={() => onNavigate('model-methodology', 'example')}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 hover:text-teal-900 cursor-pointer"
             >
               <span>View Full Historical Evaluation Details</span>

@@ -87,4 +87,14 @@ export interface ExampleResponse {
   note?: string;
 }
 
-export type NavTab = 'dashboard' | 'predict' | 'model-info' | 'example' | 'about';
+export interface FormState {
+  pm25: string;
+  pm10: string;
+  no2: string;
+  co: string;
+  so2: string;
+  o3: string;
+}
+
+export type NavTab = 'dashboard' | 'predict' | 'model-methodology';
+export type MethodologySection = 'performance' | 'example' | 'methodology';
