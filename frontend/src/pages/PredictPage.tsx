@@ -26,6 +26,20 @@ interface FormErrors {
   co?: string;
   so2?: string;
   o3?: string;
+  month?: string;
+}
+
+type PollutantKey = 'pm25' | 'pm10' | 'no2' | 'co' | 'so2' | 'o3';
+
+interface PollutantConfig {
+  id: PollutantKey;
+  name: string;
+  label: string;
+  unit: string;
+  desc: string;
+  maxObserved: number;
+  step: string;
+  optional: boolean;
 }
 
 const DEFAULT_EXAMPLE: FormState = {
@@ -56,65 +70,71 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
     'PM2.5': 949.99,
     'PM10': 917.08,
     'NO2': 362.21,
-    'CO': 175.81,
+    'CO': 17.0,
     'SO2': 186.08,
     'O3': 257.73,
   };
 
-  const pollutantConfigs = [
+  const pollutantConfigs: PollutantConfig[] = [
     {
-      id: 'pm25' as keyof FormState,
+      id: 'pm25',
       name: 'PM2.5',
       label: 'Fine Particulate Matter (PM2.5)',
       unit: 'µg/m³',
-      desc: 'Inhalable particles ≤ 2.5 micrometers from combustion, vehicle exhaust, and smoke.',
+      desc: 'Inhalable particles ≤ 2.5 µm. If omitted, estimated from PM10 via seasonal ratio.',
       maxObserved: trainingMaxima['PM2.5'],
       step: '0.01',
+      optional: true,
     },
     {
-      id: 'pm10' as keyof FormState,
+      id: 'pm10',
       name: 'PM10',
       label: 'Coarse Particulate Matter (PM10)',
       unit: 'µg/m³',
-      desc: 'Inhalable particles ≤ 10 micrometers from dust, construction, and mechanical road abrasion.',
+      desc: 'Inhalable particles ≤ 10 µm. If omitted, estimated from PM2.5 via seasonal ratio.',
       maxObserved: trainingMaxima['PM10'],
       step: '0.01',
+      optional: true,
     },
     {
-      id: 'no2' as keyof FormState,
+      id: 'no2',
       name: 'NO2',
       label: 'Nitrogen Dioxide (NO₂)',
       unit: 'µg/m³',
       desc: 'Toxic gas from motor vehicles, industrial boilers, and thermal power facilities.',
       maxObserved: trainingMaxima['NO2'],
       step: '0.01',
+      optional: false,
     },
     {
-      id: 'co' as keyof FormState,
+      id: 'co',
       name: 'CO',
       label: 'Carbon Monoxide (CO)',
       unit: 'mg/m³',
-      desc: 'Colorless, odorless gas emitted by incomplete combustion in engines and biomass burning.',
+      desc: 'Emitted by incomplete combustion. Screened at 17.0 mg/m³ advisory ceiling.',
       maxObserved: trainingMaxima['CO'],
       step: '0.01',
+      optional: false,
     },
     {
-      id: 'so2' as keyof FormState,
+      id: 'so2',
       name: 'SO2',
       label: 'Sulphur Dioxide (SO₂)',
       unit: 'µg/m³',
       desc: 'Gas from fuel combustion containing sulphur (coal, petroleum refining, smelters).',
       maxObserved: trainingMaxima['SO2'],
       step: '0.01',
+      optional: false,
     },
     {
-      id: 'o3' as keyof FormState,
+      id: 'o3',
       name: 'O3',
       label: 'Ground-Level Ozone (O₃)',
       unit: 'µg/m³',
       desc: 'Secondary photochemical pollutant formed by NOx and VOC reaction under sunlight.',
       maxObserved: trainingMaxima['O3'],
       step: '0.01',
+      optional: false,
     },
   ];
 
@@ -129,11 +149,22 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
     const newErrors: FormErrors = {};
     let isValid = true;
 
+    const pm25Raw = (formData.pm25 || '').trim();
+    const pm10Raw = (formData.pm10 || '').trim();
+
+    if (!pm25Raw && !pm10Raw) {
+      newErrors.pm25 = 'Provide PM2.5 or PM10 (the other will be estimated via seasonal ratio)';
+      newErrors.pm10 = 'Provide PM2.5 or PM10 (the other will be estimated via seasonal ratio)';
+      isValid = false;
+    }
+
     pollutantConfigs.forEach((p) => {
-      const rawVal = formData[p.id].trim();
+      const rawVal = (formData[p.id] || '').trim();
       if (!rawVal) {
-        newErrors[p.id] = `${p.name} is required`;
-        isValid = false;
+        if (!p.optional) {
+          newErrors[p.id] = `${p.name} is required`;
+          isValid = false;
+        }
         return;
       }
       const num = parseFloat(rawVal);
@@ -159,12 +190,13 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
     setSubmitting(true);
     try {
       const payload: PredictRequest = {
-        pm25: parseFloat(formData.pm25),
-        pm10: parseFloat(formData.pm10),
+        pm25: formData.pm25.trim() ? parseFloat(formData.pm25) : undefined,
+        pm10: formData.pm10.trim() ? parseFloat(formData.pm10) : undefined,
         no2: parseFloat(formData.no2),
         co: parseFloat(formData.co),
         so2: parseFloat(formData.so2),
         o3: parseFloat(formData.o3),
+        month: new Date().getMonth() + 1,
       };
 
       const res = await api.predict(payload);
@@ -258,7 +290,7 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pollutantConfigs.map((p) => {
-                const val = formData[p.id];
+                const val = formData[p.id] || '';
                 const numVal = parseFloat(val);
                 const isOutOfRange = !isNaN(numVal) && numVal > p.maxObserved;
                 const fieldError = errors[p.id];
@@ -266,9 +298,14 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
                 return (
                   <div key={p.id} className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label htmlFor={p.id} className="text-xs font-semibold text-slate-800 flex items-center gap-1">
+                      <label htmlFor={p.id} className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
                         <span>{p.name}</span>
                         <span className="text-slate-400 font-normal">({p.unit})</span>
+                        {p.optional && (
+                          <span className="text-[10px] font-medium text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/60">
+                            Auto-estimated if empty
+                          </span>
+                        )}
                       </label>
                       <span className="text-[10px] text-slate-400">
                         Max: {p.maxObserved}
@@ -363,7 +400,14 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6 overflow-hidden relative animate-in fade-in duration-300">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Prediction Outcome</span>
-                <span className="text-xs text-slate-400 font-mono">{result.model_name}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-slate-500 font-mono">{result.model_name}</span>
+                  {result.model_version && (
+                    <span className="px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 text-[10px] font-mono border border-teal-200">
+                      v{result.model_version}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Main Score Header */}
@@ -376,8 +420,13 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
                     {result.predicted_aqi.toFixed(1)}
                   </div>
                   {result.raw_predicted_aqi !== result.predicted_aqi && (
-                    <span className="text-xs text-slate-400">
-                      Raw model output: {result.raw_predicted_aqi.toFixed(2)} (clamped to 0)
+                    <span className="text-xs text-slate-400 block mt-0.5">
+                      Raw model output: {result.raw_predicted_aqi.toFixed(2)} (capped to 500 statutory scale)
+                    </span>
+                  )}
+                  {result.features_used && (
+                    <span className="text-[11px] text-teal-700 block mt-1 font-medium">
+                      Features: {Object.entries(result.features_used).map(([k, v]) => `${k}: ${typeof v === 'number' ? v.toFixed(1) : v}`).join(' | ')}
                     </span>
                   )}
                 </div>

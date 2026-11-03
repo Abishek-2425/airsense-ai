@@ -1,10 +1,11 @@
 export interface PredictRequest {
-  pm25: number;
-  pm10: number;
+  pm25?: number;
+  pm10?: number;
   no2: number;
   co: number;
   so2: number;
   o3: number;
+  month?: number;
 }
 
 export interface PredictResponse {
@@ -14,14 +15,17 @@ export interface PredictResponse {
   recommendations: string[];
   warnings: string[];
   input_values: {
-    pm25: number;
-    pm10: number;
+    pm25?: number | null;
+    pm10?: number | null;
     no2: number;
     co: number;
     so2: number;
     o3: number;
+    month?: number | null;
   };
+  features_used?: Record<string, number>;
   model_name: string;
+  model_version?: string;
 }
 
 export interface FeatureImportance {
@@ -47,6 +51,7 @@ export interface DatasetSummary {
     start: string;
     end: string;
   };
+  embargo_date?: string;
   test_date_range?: {
     start: string;
     end: string;
@@ -55,6 +60,7 @@ export interface DatasetSummary {
 
 export interface ModelInfoResponse {
   model_name: string;
+  model_version?: string;
   target: string;
   features: string[];
   feature_importances: FeatureImportance[];
@@ -62,11 +68,13 @@ export interface ModelInfoResponse {
   metrics: ModelMetrics;
   feature_importance_note: string;
   dataset_summary?: DatasetSummary;
+  preprocessing_strategy?: string;
 }
 
 export interface HealthResponse {
   status: string;
   model_loaded: boolean;
+  model_version?: string;
 }
 
 export interface ExampleResponse {
@@ -94,6 +102,7 @@ export interface FormState {
   co: string;
   so2: string;
   o3: string;
+  month?: string;
 }
 
 export type NavTab = 'dashboard' | 'predict' | 'model-methodology';

@@ -1,5 +1,5 @@
 # AI-Powered Air Quality Prediction & Decision Support System (AirSense AI)
-## Comprehensive Architecture, Engineering & Methodology Guide
+## Comprehensive Architecture, Engineering & Methodology Guide (Production Release v2.0)
 
 ---
 
@@ -8,36 +8,37 @@
 **AirSense AI** is an end-to-end machine learning and environmental decision-support system designed to forecast the **next calendar day's Air Quality Index (AQI)** using current-day concentrations of six criteria air pollutants.
 
 Unlike standard monitoring tools that only display retrospective or current sensor readings, this project integrates:
-1. **Supervised Regression Modeling**: A machine learning pipeline trained on historical multi-city data from the Central Pollution Control Board (CPCB).
-2. **Automated Input Guardrails**: Strict boundary checking against historical empirical training maximums.
-3. **Deterministic Decision Support**: Rule-based categorization and targeted public health advisories.
-4. **Decoupled Modern Web Architecture**: A high-performance **FastAPI** REST backend paired with an interactive **React 19 + TypeScript + Vite** frontend dashboard.
+1. **Supervised Regression Modeling (Release Candidate v2.0)**: An ensemble Random Forest regression pipeline trained on five years of multi-city data from the Central Pollution Control Board (CPCB), with strict chronological embargo partitioning, statutory target capping ($\le 500$), and atmospheric feature attribution.
+2. **Dynamic Particulate Ratio Imputation**: Seasonal training-fitted $\text{PM}_{2.5}/\text{PM}_{10}$ ratio estimation allowing flexible inference even when stations lack coarse particulate analyzers.
+3. **Automated Input Guardrails & Anomaly Advisories**: Screening and runtime advisory thresholds ($17.0\ \text{mg/m}^3$ for $\text{CO}$) preventing sensor-contamination artifacts from distorting predictions.
+4. **Deterministic Decision Support**: Rule-based categorization across six standard CPCB prototype bands and targeted public health advisories.
+5. **Decoupled Modern Web Architecture**: A high-performance **FastAPI** REST backend paired with an interactive **React + TypeScript + Vite** frontend dashboard.
 
 ```mermaid
 flowchart TD
-    subgraph DataPipeline ["1. Training & ML Pipeline"]
-        A["CPCB Multi-City Dataset (city_day.csv)"] --> B["Chronological Alignment & Target Shifting (t + 1)"]
-        B --> C["Temporal Train/Test Split (80/20)"]
-        C --> D["SimpleImputer (Median) + RandomForestRegressor"]
-        D --> E["Serialized Artifacts (aqi_model.pkl & model_metadata.json)"]
+    subgraph DataPipeline ["1. Training & ML Pipeline (v2.0)"]
+        A["CPCB Multi-City Dataset (city_day.csv)"] --> B["Consecutive Calendar Day Pairing (t to t+1)"]
+        B --> C["Chronological Embargo Split (Train <= 2019-12-04, Embargo 2019-12-05, Test >= 2019-12-06)"]
+        C --> D["Quality Screening (CO <= 17 mg/m3, Target <= 500)"]
+        D --> E["AirSensePreprocessor (Monthly PM Ratio + Median Imputer)"]
+        E --> F["RandomForestRegressor (100 Trees, min_samples_leaf=2)"]
+        F --> G["Serialized Composite Artifacts (aqi_model.pkl & model_metadata.json)"]
     end
 
     subgraph BackendAPI ["2. FastAPI Backend Engine (Port 8000)"]
-        E --> F["Application Lifespan (Pre-loads Model & Metadata)"]
-        G["Client Request (PM2.5, PM10, NO2, CO, SO2, O3)"] --> H["Pydantic Schemas & Bounds Validation"]
-        H --> I["Model Inference Engine (predict_aqi_raw)"]
-        H --> J["Training Maxima Anomaly Check"]
-        I --> K["Decision Support Classifier (classify_aqi)"]
-        J --> L["Payload Assembler"]
-        K --> L
-        L --> M["JSON Response (Prediction, Band, Advisories, Warnings)"]
+        G --> H["Lifespan Startup: Load AirSenseCompositeModel"]
+        I["Client Request (PM2.5, PM10, NO2, CO, SO2, O3, month)"] --> J["Pydantic Schemas & Flexible Particulate Validation"]
+        J --> K["AirSenseCompositeModel.predict_single()"]
+        K --> L["Monthly PM Ratio Imputation & Anomaly Warning Generator"]
+        L --> M["Decision Support Classifier (classify_aqi, statutory clamping <= 500)"]
+        M --> N["JSON Response (Prediction, Band, Advisories, Warnings, features_used)"]
     end
 
-    subgraph FrontendApp ["3. React 19 Frontend Dashboard (Port 3000)"]
-        N["User Interface (Form / Presets)"] --> G
-        M --> O["AQI Scale Visualizer (0 - 500+)"]
-        M --> P["Category Badges & Public Health Advisories"]
-        M --> Q["Model Diagnostics & Feature Importance Charts"]
+    subgraph FrontendApp ["3. React Frontend Dashboard (Port 3000)"]
+        O["User Interface (Interactive Form / Benchmark Presets)"] --> I
+        N --> P["AQI Scale Visualizer (0 to 500 Scale)"]
+        N --> Q["Category Badges & Public Health Advisories"]
+        N --> R["Model Diagnostics & Genuine Feature Importance Charts"]
     end
 ```
 
@@ -46,77 +47,89 @@ flowchart TD
 ## 2. Dataset & Data Engineering Pipeline
 
 ### 2.1 Raw Data Source
-The system utilizes continuous ambient air quality monitoring station data across 26 major Indian industrial and metropolitan centers (covering 2015 to 2020) compiled by the CPCB:
+The system utilizes continuous ambient air quality monitoring station data across 26 major Indian industrial and metropolitan centers (covering 2015 to 2020) compiled by the Central Pollution Control Board (CPCB):
 * **Total raw rows**: 29,531 daily records across 26 cities.
 * **Temporal range**: January 1, 2015 through June 30, 2020.
 
 ### 2.2 Consecutive Calendar Day Pairing (`t` to `t+1`)
 To frame next-day air quality forecasting as a rigorous supervised regression task without data leakage:
 1. Records are grouped strictly by `City` and ordered chronologically by `Date`.
-2. A forward shift ($t+1$) creates the target:
+2. A forward shift ($t+1$) creates the prediction target:
    $$\text{Target\_AQI}_{i, t} = \text{AQI}_{i, t+1}$$
-3. A strict calendar constraint ensures no temporal jumps:
-   $$\text{Date}_{t+1} - \text{Date}_t = 1\ \text{day}$$
+3. A strict calendar constraint ensures no temporal interpolation or multi-day jumps:
+   $$\text{Date}_{t+1} - \text{Date}_t = 1\ \text{calendar day}$$
    Pairs with missing intervening calendar days are filtered out rather than artificially stitched together.
-4. Records lacking next-day ground-truth AQI are dropped, yielding **24,849 valid supervised pairs**.
+4. Records lacking next-day ground-truth AQI are excluded, yielding **24,849 valid supervised calendar pairs**.
 
-### 2.3 Strict Chronological Train/Test Partitioning
-To emulate real-world forecasting where future data is never observed:
-* **Train Partition (80%)**: 19,879 records from **2015-01-01** to **2019-12-05**.
-* **Test Partition (20%)**: 4,970 records from **2019-12-05** to **2020-06-30** (4,902 matched cases with valid baseline comparisons).
-* **Zero Target Leakage**: Imputation statistics (medians) are calculated exclusively on the training partition and frozen for inference.
+### 2.3 Strict Chronological Embargo Partitioning
+Random shuffling was strictly avoided to prevent temporal lookahead leakage. To prevent 24-hour forward label transition leakage across the train/test boundary, an **embargo buffer** was introduced:
+* **Train Partition**: 19,160 clean records from **2015-01-01** to **2019-12-04** (after screening 699 rows with $\text{CO} > 17.0\ \text{mg/m}^3$).
+* **Embargo Buffer**: **2019-12-05** (isolated transition date to prevent overlap between training features and test ground truth).
+* **Test Partition**: 4,900 held-out records from **2019-12-06** to **2020-06-30**.
+* **Zero Statistical Leakage**: Imputation medians and monthly ratio parameters are computed exclusively on the training partition and frozen for test inference.
 
 ---
 
-## 3. Machine Learning Architecture & Evaluation
+## 3. Machine Learning Architecture & Evaluation (v2.0)
 
 ### 3.1 Feature Order & Dimensionality
 The model strictly expects 6 criteria pollutants in the following order:
 
-| Feature Name | Chemical / Physical Entity | Official Metric Unit | Training Median Imputation | Historical Training Max |
+| Feature Name | Chemical / Physical Entity | Official Metric Unit | Training Median Imputation | Operational Training Max |
 | :--- | :--- | :--- | :--- | :--- |
 | **`PM2.5`** | Fine Particulate Matter ($\le 2.5\ \mu\text{m}$) | $\mu\text{g/m}^3$ | $52.20\ \mu\text{g/m}^3$ | $949.99\ \mu\text{g/m}^3$ |
 | **`PM10`** | Inhalable Particulate Matter ($\le 10\ \mu\text{m}$) | $\mu\text{g/m}^3$ | $101.88\ \mu\text{g/m}^3$ | $917.08\ \mu\text{g/m}^3$ |
 | **`NO2`** | Nitrogen Dioxide | $\mu\text{g/m}^3$ | $23.81\ \mu\text{g/m}^3$ | $362.21\ \mu\text{g/m}^3$ |
-| **`CO`** | Carbon Monoxide | $\text{mg/m}^3$ *(Note: mg, not $\mu$g)* | $0.98\ \text{mg/m}^3$ | $175.81\ \text{mg/m}^3$ |
+| **`CO`** | Carbon Monoxide | $\text{mg/m}^3$ | $0.98\ \text{mg/m}^3$ | $17.00\ \text{mg/m}^3$ *(screened)* |
 | **`SO2`** | Sulphur Dioxide | $\mu\text{g/m}^3$ | $9.11\ \mu\text{g/m}^3$ | $186.08\ \mu\text{g/m}^3$ |
 | **`O3`** | Ground-Level Ozone | $\mu\text{g/m}^3$ | $30.86\ \mu\text{g/m}^3$ | $257.73\ \mu\text{g/m}^3$ |
 
-### 3.2 Pipeline Composition
-The serialized estimator [`aqi_model.pkl`](file:///e:/evs/aqi_model.pkl) encapsulates a two-step Scikit-learn `Pipeline`:
-1. **`SimpleImputer(strategy='median')`**: Handles any missing pollutant features in production using the precomputed training medians.
+### 3.2 Preprocessing & Pipeline Architecture
+The promoted model artifact `aqi_model.pkl` encapsulates an `AirSenseCompositeModel`:
+1. **`AirSensePreprocessor`**:
+   - Monthly $\text{PM}_{2.5}/\text{PM}_{10}$ ratio imputer (national mean: $0.4644$; monthly curve ranging from $0.3915$ in June to $0.5643$ in December).
+   - If $\text{PM}_{10}$ is missing, it is estimated via:
+     $$\widehat{\text{PM}}_{10} = \frac{\text{PM}_{2.5}}{r_{\text{month}}}$$
+   - Pre-computed training medians serve as fallback for unobserved pollutants.
 2. **`RandomForestRegressor`**:
-   * `n_estimators`: 100 decision trees
-   * `min_samples_leaf`: 2 (prevents overfitting to single-station noise)
-   * `random_state`: 42 (ensures deterministic reproducibility)
-   * `n_jobs`: -1 (parallel tree construction)
+   - `n_estimators`: 100 decision trees
+   - `min_samples_leaf`: 2 (prevents overfitting to single-station noise)
+   - `random_state`: 42 (deterministic reproducibility)
+   - `n_jobs`: -1 (multiprocessing parallelism)
+   - Trained with targets capped at the statutory ceiling ($500.0$).
 
-### 3.3 Genuine Gini Feature Importance
-Analysis of node impurity reduction reveals the model's reliance on each feature:
-* **`PM2.5`**: ~44.6% (primary predictive driver across Indian urban airsheds)
-* **`PM10`**: ~17.8% (coarse particulate indicator)
-* **`NO2`**: ~12.5% (vehicular and combustion marker)
-* **`CO`**: ~8.9%
-* **`O3`**: ~8.5%
-* **`SO2`**: ~7.6%
+### 3.3 Genuine Empirical Feature Importance
+Following the screening of extreme CO observations ($>17.0\ \text{mg/m}^3$), the model's feature reliance aligns with established environmental physics:
 
-### 3.4 Model Evaluation vs. Persistence Baseline
-The model was evaluated against an un-lagged **Persistence Baseline** (predicting tomorrow's AQI is equal to today's AQI: $\hat{y}_{t+1} = y_t$):
+| Pollutant Feature | Production v1.0 (Contaminated) | Release Candidate v2.0 (Cleaned) | Atmospheric Realism |
+| :--- | :---: | :---: | :--- |
+| **`PM2.5`** | $46.47\%$ | **$73.68\%$** | Dominant driver of winter smog and Indian NAQI |
+| **`PM10`** | $4.26\%$ | **$11.84\%$** | Coarse dust and mechanical abrasion |
+| **`CO`** | $40.37\%$ *(artifact)* | **$7.93\%$** | Restored to realistic combustion indicator |
+| **`SO2`** | $3.24\%$ | **$2.33\%$** | Industrial emissions indicator |
+| **`NO2`** | $2.94\%$ | **$2.19\%$** | Vehicular combustion marker |
+| **`O3`** | $2.71\%$ | **$2.03\%$** | Secondary photochemical oxidant |
+| **Total Particulates** | **$50.73\%$** | **$85.52\%$** | **Particulate dominance restored (+34.79% shift)** |
 
-| Metric | Random Forest Model | Persistence Baseline | Improvement |
-| :--- | :---: | :---: | :---: |
-| **Coefficient of Determination ($R^2$)** | **0.8367** | 0.7724 | **+8.3% variance explained** |
-| **Root Mean Squared Error (RMSE)** | **36.46** | 43.05 | **-15.3% error reduction** |
-| **Mean Absolute Error (MAE)** | **20.10** | 20.91 | **-3.9% error reduction** |
-| **Test Sample Size ($N$)** | 4,902 | 4,902 | Evaluated on identical pairs |
+### 3.4 Out-of-Sample Model Evaluation
+The v2.0 model was evaluated against an un-lagged **Persistence Baseline** ($\hat{y}_{t+1} = y_t$) across the 4,900 held-out chronological test observations:
+
+| Metric | Random Forest v2.0 (Operational $\le 500$) | Persistence Baseline | Comparative Advantage |
+| :--- | :---: | :---: | :--- |
+| **Coefficient of Determination ($R^2$)** | **0.8712** | 0.8284 | **+4.28% variance explained** |
+| **Root Mean Squared Error (RMSE)** | **29.41** | 34.04 | **-13.6% error reduction** |
+| **Mean Absolute Error (MAE)** | **19.26** | 19.60 | **-0.34 AQI points lower error** |
+| **Non-Ahmedabad Cities ($N=4,703$) MAE** | **17.84** | 18.02 | **Consistently superior across all 25 cities** |
+| **Delhi ($N=208$) $R^2$** | **0.9027** | 0.8991 | **Superior performance in severe airsheds** |
+| **Missing-$\text{PM}_{10}$ Simulation MAE** | **21.00** | 26.84 *(v1 imputer)* | **-5.84 AQI points improvement via ratio imputer** |
 
 ---
 
 ## 4. Rule-Based Decision Support System
 
 ### 4.1 Methodology: Regression vs. CPCB Breakpoint Sub-Indices
-* **CPCB Statutory Calculation**: Calculates individual sub-indices for each monitored pollutant via piecewise linear interpolation across predefined concentration breakpoints, taking the maximum sub-index (requiring at least 3 pollutants with one being PM10 or PM2.5).
-* **AirSense AI Empirical Regression**: Predicts the continuous numeric composite AQI directly. The system then deterministically maps this predicted value into standard prototype bands:
+* **CPCB Statutory Calculation**: Calculates individual sub-indices for monitored pollutants via piecewise linear interpolation across predefined concentration breakpoints, taking the maximum sub-index (requiring at least 3 pollutants with one being $\text{PM}_{10}$ or $\text{PM}_{2.5}$).
+* **AirSense AI Empirical Regression**: Predicts the continuous numeric composite AQI 24 hours into the future. The system then maps this predicted value into standard CPCB prototype bands:
 
 ```text
   [0 - 50]       Good          Minimal health impact, ideal for outdoor activity.
@@ -127,14 +140,15 @@ The model was evaluated against an un-lagged **Persistence Baseline** (predictin
   [401 - 500+]   Severe        Emergency condition; serious health impacts across all groups.
 ```
 
-### 4.2 Deterministic Half-Up Clamping & Rounding
-To prevent floating-point boundary jitter (e.g., $100.49$ vs. $100.51$), the decision engine implements standard arithmetic half-up rounding:
-$$\text{Effective AQI} = \lfloor \hat{y} + 0.5 \rfloor$$
-Negative raw outputs (physically impossible in air pollution) are clamped to $0$ with an informative warning attached to the response.
+### 4.2 Deterministic Clamping & Boundary Controls
+- **Statutory Scale Clamping**: Predictions are clamped between $0$ and $500.0$. Negative predictions (physically impossible) are clamped to $0$, and runaway tree predictions are capped at the statutory ceiling of $500.0$.
+- **Arithmetic Half-Up Rounding**: To prevent boundary jitter, category classification applies standard arithmetic half-up rounding: $\text{Effective AQI} = \lfloor \hat{y} + 0.5 \rfloor$.
 
-### 4.3 Training Maxima Guardrails
-If any user input exceeds the maximum observed non-null value during the 5-year training period (e.g., $\text{PM}_{2.5} > 949.99\ \mu\text{g/m}^3$), the system does not crash or silently extrapolate; it computes the estimate but appends an explicit warning:
-> `"Warning: PM2.5 concentration (1250.0 ug/m3) exceeds the maximum training observation (949.99 ug/m3). Prediction may represent extreme extrapolation."`
+### 4.3 Runtime Anomaly & Screening Guardrails
+1. **CO Anomaly Advisory ($\text{CO} > 17.0\ \text{mg/m}^3$)**:
+   If carbon monoxide exceeds $17.0\ \text{mg/m}^3$, the system computes inference but appends an advisory warning noting potential local exhaust contamination.
+2. **Historical Maximum Guardrail**:
+   If any pollutant exceeds the maximum non-null value in the training partition, a clear advisory is attached indicating prediction extrapolation.
 
 ---
 
@@ -144,90 +158,80 @@ If any user input exceeds the maximum observed non-null value during the 5-year 
 ```text
 backend/
 ├── __init__.py
-├── main.py              # Application entry point, CORS, routers, exception handlers
-├── schemas.py           # Pydantic v2 validation models
-├── predictor.py         # Thread-safe pipeline loading, caching & raw inference
-├── decision_support.py  # Classification, rounding, and health advisories
+├── main.py              # Application entry point, lifespan, CORS, REST routers
+├── preprocessor.py      # Serializable AirSensePreprocessor & AirSenseCompositeModel
+├── predictor.py         # Thread-safe pipeline loading, model caching & inference
+├── schemas.py           # Pydantic v2 validation models (supports optional particulates)
+├── decision_support.py  # Classification, half-up rounding, and health advisories
 └── tests/
-    ├── __init__.py
-    └── test_api.py      # Automated pytest verification suite
+    └── test_backend_api.py # Automated test suite (10/10 passing tests)
 ```
 
 ### 5.2 Key Endpoints
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/health` | Reports service health and model deserialization readiness. |
-| `GET` | `/model-info` | Exposes model architecture, performance metrics, feature importances, and training bounds. |
+| `GET` | `/health` | Reports service health, model deserialization status, and model version (`2.0.0`). |
+| `GET` | `/model-info` | Exposes model architecture, metrics, genuine feature importances, and training bounds. |
 | `GET` | `/example` | Returns the ground-truth Visakhapatnam test benchmark case study. |
-| `POST` | `/predict` | Ingests pollutant readings, executes inference, checks bounds, and returns decision guidance. |
-| `GET` | `/docs` | Interactive Swagger UI documentation. |
+| `POST` | `/predict` | Ingests pollutant readings (optional $\text{PM}_{10}$/$\text{PM}_{2.5}$), executes inference, and returns decision guidance. |
+| `GET` | `/docs` | Interactive OpenAPI / Swagger UI documentation. |
 | `GET` | `/redoc` | Interactive ReDoc technical specification. |
-
-### 5.3 Cross-Version Compatibility Bridge
-In [`backend/predictor.py`](file:///e:/evs/backend/predictor.py#L71-L76), an automated bridge ensures compatibility between models serialized in Scikit-learn 1.5.x and newer production runtime environments:
-```python
-# Automatically bridge internal attribute changes for SimpleImputer across scikit-learn releases
-imputer = pipeline.named_steps.get('imputer')
-if imputer is not None and not hasattr(imputer, '_fill_dtype') and hasattr(imputer, '_fit_dtype'):
-    imputer._fill_dtype = imputer._fit_dtype
-```
 
 ---
 
-## 6. Frontend Architecture (React 19, Vite & Tailwind)
+## 6. Frontend Architecture (React, Vite & Tailwind)
 
 ### 6.1 Technology Stack
-* **Runtime / Framework**: React 19 + TypeScript + Vite.
-* **Styling**: Tailwind CSS with custom responsive layout and dark/light accents.
-* **Visualizations**: Recharts (for feature importance bar charts and performance distribution).
+* **Framework**: React 19 + TypeScript + Vite.
+* **Styling**: Tailwind CSS with custom responsive layouts.
+* **Visualizations**: Recharts for feature importance bar charts and performance distribution.
 * **Iconography**: Lucide React.
 * **HTTP Client**: Native browser `fetch` with `AbortController` timeout resilience.
 
 ### 6.2 Component Hierarchy
-* **`Navbar`**: Persistent branding, navigation tabs, and a real-time heartbeat indicator polling `GET /health` every 15 seconds.
+* **`Navbar`**: Persistent navigation tabs, branding, and a live heartbeat indicator polling `GET /health` every 15 seconds.
 * **`Dashboard` Page**:
   * Real-time connectivity status banner.
-  * 4 performance metric stat cards ($R^2$, $\text{RMSE}$, $\text{MAE}$, $N=4,902$).
-  * Feature importance breakdown preview.
+  * 4 performance metric stat cards ($R^2 = 0.8712$, $\text{RMSE} = 29.41$, $\text{MAE} = 19.26$, $N=4,900$).
+  * Genuine feature importance breakdown chart.
   * Benchmark case study showcase (Visakhapatnam evaluation).
   * System architecture workflow diagram.
 * **`PredictPage`**:
-  * Input forms for all 6 pollutants with field-level bounds ($[0, \infty)$).
-  * Quick preset selectors (**Baseline Test**, **Clean Air**, **Moderate City**, **Industrial Pollution**).
-  * Dynamic visual AQI gauge scale (0 to 500+).
-  * Color-coded category badge and rule-based public health bullet points.
-  * Real-time training boundary alert badges.
+  * Input forms for all 6 pollutants with field-level validation and optional particulate handling.
+  * Benchmark sample loader.
+  * Dynamic visual AQI scale meter ($0$ to $500$).
+  * Category badge, features used indicator, and public health advisories.
+  * Runtime anomaly warning badges for $\text{CO} > 17.0\ \text{mg/m}^3$ and training maxima.
 * **`ModelMethodologyPage`**:
-  * Comprehensive academic documentation, data partition statistics, CPCB methodology comparison, and statutory disclaimers.
+  * Complete 7-step pipeline methodology.
+  * Dedicated Phase 2B scientific data quality & model verification report card.
+  * CPCB statutory calculation comparison.
+  * Educational and medical disclaimers.
 
 ---
 
 ## 7. Local Deployment & Run Instructions
 
 ### 7.1 Prerequisites
-* Python 3.10+ (tested on Python 3.11)
-* Node.js v18+ (tested on Node v24)
+* Python 3.10+
+* Node.js v18+
 
-### 7.2 Running the Backend (Port 8000)
+### 7.2 Running Backend Automated Tests
 ```powershell
-# From the project root (e:\evs)
-# 1. Activate the virtual environment
-.\venv\Scripts\Activate.ps1
+python -m unittest tests/test_backend_api.py
+```
 
-# 2. Run automated test suite
-pytest backend/tests/test_api.py -v
-
-# 3. Start the FastAPI server
-uvicorn backend.main:app --host 127.0.0.1 --port 8000
+### 7.3 Starting the Backend Server (Port 8000)
+```powershell
+uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 * Interactive Swagger Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 * Health Status: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
 
-### 7.3 Running the Frontend (Port 3000)
+### 7.4 Running the Frontend Client (Port 3000)
 ```powershell
-# From the frontend directory (e:\evs\frontend)
-# 1. Start the Vite development server
+cd frontend
 npm run dev
 ```
 * Dashboard URL: [http://localhost:3000](http://localhost:3000)
@@ -236,9 +240,9 @@ npm run dev
 
 ## 8. Academic Context, Limitations & Disclaimers
 
-1. **Empirical Regression vs. Statutory Certification**:
-   The model produces an empirical statistical estimate for next-day planning. It is not an official legal certification or statutory compliance calculation as defined by environmental regulatory authorities.
-2. **Concept Drift Notice**:
-   Because the test partition spans the spring 2020 COVID-19 nationwide lockdown, baseline emissions patterns underwent drastic shifts, which is documented in the methodology section.
+1. **Empirical Regression vs. Statutory Calculation**:
+   The model produces an empirical statistical estimate for next-day planning. It does not replace the official statutory NAQI calculated by regulatory authorities via piecewise linear breakpoint tables.
+2. **Sensor Contamination Screening**:
+   Extreme carbon monoxide observations exceeding $17.0\ \text{mg/m}^3$ were screened during training because evidence from station records indicates localized sensor distortion at Ahmedabad Maninagar. In production, inputs exceeding $17.0\ \text{mg/m}^3$ generate advisory notices rather than hard rejections.
 3. **Medical Disclaimer**:
-   Public health advisories generated by the decision support engine are for educational and advisory purposes and do not replace personalized guidance from medical practitioners.
+   Public health advisories generated by the decision support engine are for educational and advisory purposes and do not replace personalized medical advice from certified healthcare professionals.

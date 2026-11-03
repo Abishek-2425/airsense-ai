@@ -1,35 +1,40 @@
 """
-Pydantic schemas for the Air Quality Prediction & Decision Support System API.
+Pydantic schemas for the Air Quality Prediction & Decision Support System API (v2.0).
 """
 
 import math
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 
 
 class PredictRequest(BaseModel):
     """
-    Request payload containing the six pollutant readings for current day.
+    Request payload containing pollutant readings for the current day.
+    PM10 and PM2.5 are optional when the other is provided; physical monthly ratio
+    imputation is applied to reconstruct missing particulate matter.
     """
     model_config = ConfigDict(extra='forbid')
 
-    pm25: float = Field(..., description="PM2.5 concentration in ug/m3")
-    pm10: float = Field(..., description="PM10 concentration in ug/m3")
+    pm25: Optional[float] = Field(None, description="PM2.5 concentration in ug/m3 (optional if PM10 is provided)")
+    pm10: Optional[float] = Field(None, description="PM10 concentration in ug/m3 (optional if PM2.5 is provided)")
     no2: float = Field(..., description="NO2 concentration in ug/m3")
     co: float = Field(..., description="CO concentration in mg/m3")
     so2: float = Field(..., description="SO2 concentration in ug/m3")
     o3: float = Field(..., description="O3 concentration in ug/m3")
+    month: Optional[int] = Field(None, ge=1, le=12, description="Current calendar month (1-12) for seasonal ratio estimation")
 
     @field_validator('pm25', 'pm10', 'no2', 'co', 'so2', 'o3')
     @classmethod
-    def validate_pollutant_value(cls, v: float, info) -> float:
+    def validate_pollutant_value(cls, v: Optional[float], info) -> Optional[float]:
+        if v is None:
+            return None
         if not math.isfinite(v):
             raise ValueError(f"Value for '{info.field_name}' must be a finite number (NaN and Infinity are not permitted).")
         if v < 0.0:
             raise ValueError(f"Value for '{info.field_name}' must be non-negative (received {v}).")
         return float(v)
 
-    def to_feature_dict(self) -> Dict[str, float]:
+    def to_feature_dict(self) -> Dict[str, Optional[float]]:
         """
         Maps JSON request fields to model feature names in exact training order:
         ['PM2.5', 'PM10', 'NO2', 'CO', 'SO2', 'O3'].
@@ -48,13 +53,15 @@ class PredictResponse(BaseModel):
     """
     Response schema for next-calendar-day AQI prediction and decision support.
     """
-    predicted_aqi: float = Field(..., description="Displayed predicted next-calendar-day AQI (clamped to 0 if negative)")
+    predicted_aqi: float = Field(..., description="Displayed operational next-day AQI (clamped to 0-500)")
     raw_predicted_aqi: float = Field(..., description="Raw model regression output before display clamping")
     category: str = Field(..., description="AQI category assigned according to prototype bands")
     recommendations: List[str] = Field(..., description="Concise rule-based advisory recommendations")
-    warnings: List[str] = Field(..., description="List of warning messages for out-of-range inputs or clamping")
-    input_values: Dict[str, float] = Field(..., description="Submitted pollutant input readings")
+    warnings: List[str] = Field(default_factory=list, description="List of warning messages for out-of-range inputs or estimation")
+    input_values: Dict[str, Any] = Field(..., description="Submitted pollutant input readings")
+    features_used: Optional[Dict[str, float]] = Field(None, description="Actual pollutant feature values passed to estimator after imputation")
     model_name: str = Field(..., description="Identifier of the model used for prediction")
+    model_version: str = Field("2.0.0", description="Semantic version of the loaded model artifact")
 
 
 class FeatureImportanceItem(BaseModel):
@@ -74,6 +81,7 @@ class EvaluationMetrics(BaseModel):
 class ModelInfoResponse(BaseModel):
     """Detailed model architecture, metadata, feature importance, and performance metrics."""
     model_name: str
+    model_version: str
     target: str
     features: List[str]
     feature_importances: List[FeatureImportanceItem]
@@ -81,12 +89,14 @@ class ModelInfoResponse(BaseModel):
     metrics: EvaluationMetrics
     feature_importance_note: str
     dataset_summary: Optional[Dict[str, Any]] = None
+    preprocessing_strategy: Optional[str] = None
 
 
 class HealthResponse(BaseModel):
     """Service health and model load readiness status."""
     status: str
     model_loaded: bool
+    model_version: str = "2.0.0"
 
 
 class ExampleResponse(BaseModel):

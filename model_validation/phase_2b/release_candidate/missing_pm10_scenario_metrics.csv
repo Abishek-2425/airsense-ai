@@ -1,0 +1,5 @@
+Scenario,Model,MAE,R2
+All Test: True PM10 Provided,Production Model (aqi_model.pkl),18.943718087303854,0.8742826724524568
+All Test: True PM10 Provided,Release Candidate v2.0,19.25576518820182,0.8712258825644424
+All Test: PM10 Completely Missing (Simulated),Production Model (Median Imputed),26.84239659222863,0.7915427436509823
+All Test: PM10 Completely Missing (Simulated),Release Candidate v2.0 (Ratio Imputed),20.999625719071176,0.8578837650610157

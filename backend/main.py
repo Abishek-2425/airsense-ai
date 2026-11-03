@@ -1,5 +1,5 @@
 """
-FastAPI application for AI-Powered Air Quality Prediction & Decision Support System.
+FastAPI application for AI-Powered Air Quality Prediction & Decision Support System (v2.0).
 """
 
 import os
@@ -25,7 +25,7 @@ from backend.predictor import (
     load_metadata,
     is_model_ready,
     get_model_info_dict,
-    predict_aqi_raw,
+    predict_aqi_composite,
     get_training_maxima
 )
 from backend.decision_support import (
@@ -47,7 +47,7 @@ async def lifespan(app: FastAPI):
     try:
         load_pipeline()
         load_metadata()
-        print("[Startup] Scikit-learn Pipeline and metadata loaded successfully.")
+        print("[Startup] AirSense AI Model v2.0 and metadata loaded successfully.")
     except Exception as e:
         print(f"[Startup Warning] Model artifact could not be preloaded: {e}")
     yield
@@ -57,9 +57,9 @@ app = FastAPI(
     title="AI-Powered Air Quality Prediction & Decision Support API",
     description=(
         "FastAPI backend for predicting next-calendar-day AQI from current-day pollutant "
-        "readings and providing rule-based environmental decision support."
+        "readings and providing rule-based environmental decision support with physical particulate imputation."
     ),
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan
 )
 
@@ -125,7 +125,7 @@ async def health_check():
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail={"status": "unhealthy", "model_loaded": False, "message": "Model is not loaded."}
         )
-    return HealthResponse(status="ok", model_loaded=True)
+    return HealthResponse(status="ok", model_loaded=True, model_version="2.0.0")
 
 
 @app.get("/model-info", response_model=ModelInfoResponse, tags=["Model"])
@@ -174,35 +174,47 @@ async def predict_next_day_aqi_endpoint(payload: PredictRequest):
     """
     Predicts next-calendar-day AQI from current-day pollutant readings,
     assigns a prototype category, checks training bounds, and generates recommendations.
+    Applies monthly particulate ratio estimation when PM10 or PM2.5 is omitted.
     """
     try:
-        # 1. Map validated inputs to feature order: ['PM2.5', 'PM10', 'NO2', 'CO', 'SO2', 'O3']
-        ordered_features = payload.to_feature_dict()
+        # 1. Execute composite inference (handles ratio imputation, CO threshold, bounds clamping)
+        res = predict_aqi_composite(
+            pm25=payload.pm25,
+            pm10=payload.pm10,
+            no2=payload.no2,
+            co=payload.co,
+            so2=payload.so2,
+            o3=payload.o3,
+            month=payload.month
+        )
 
         # 2. Check for inputs exceeding observed training partition maxima
         training_maxima = get_training_maxima()
-        maxima_warnings = check_training_maxima_warnings(ordered_features, training_maxima)
+        # Only check provided non-null inputs
+        provided_inputs = {k: v for k, v in payload.to_feature_dict().items() if v is not None}
+        maxima_warnings = check_training_maxima_warnings(provided_inputs, training_maxima)
 
-        # 3. Execute inference using trained Random Forest regressor
-        raw_pred = predict_aqi_raw(ordered_features)
+        # 3. Collate all warnings
+        all_warnings = res.get('warnings', []) + maxima_warnings
 
-        # 4. Map prediction to prototype AQI category, clamping, and boundary warnings
-        displayed_aqi, category, class_warnings = classify_aqi(raw_pred)
-
-        # 5. Collate all warnings
-        all_warnings = maxima_warnings + class_warnings
-
-        # 6. Retrieve rule-based environmental decision support recommendations
-        recommendations = get_recommendations(category)
+        # 4. Retrieve rule-based environmental decision support recommendations
+        recommendations = get_recommendations(res['aqi_category'])
 
         return PredictResponse(
-            predicted_aqi=displayed_aqi,
-            raw_predicted_aqi=round(raw_pred, 2),
-            category=category,
+            predicted_aqi=res['predicted_aqi'],
+            raw_predicted_aqi=res['raw_predicted_aqi'],
+            category=res['aqi_category'],
             recommendations=recommendations,
             warnings=all_warnings,
             input_values=payload.model_dump(),
-            model_name="RandomForestRegressor"
+            features_used=res.get('features_used'),
+            model_name="AirSense AI Release Candidate v2.0 (RandomForestRegressor)",
+            model_version=res.get('model_version', "2.0.0")
+        )
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(ve)
         )
     except Exception as e:
         raise HTTPException(

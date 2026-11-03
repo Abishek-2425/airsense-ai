@@ -1,0 +1,113 @@
+Evaluation_Target,Subset,Model,N,MAE,RMSE,R2,Mean_Bias
+raw_target,Non-Ahmedabad Cities (25 Cities),Persistence Baseline,4703,18.4,30.6977,0.8354,0.7257
+raw_target,Non-Ahmedabad Cities (25 Cities),Production Model (aqi_model.pkl),4703,17.8003,26.1783,0.8803,4.0721
+raw_target,Non-Ahmedabad Cities (25 Cities),Model B: Clean Baseline,4703,17.8184,26.2033,0.88,4.0389
+raw_target,Non-Ahmedabad Cities (25 Cities),Model C: Monthly Ratio Only,4703,17.8064,26.2474,0.8796,3.4589
+raw_target,Non-Ahmedabad Cities (25 Cities),Model D: CO-Screened Only,4703,17.8219,26.1365,0.8807,3.969
+raw_target,Non-Ahmedabad Cities (25 Cities),Model E: Target-Capped Only,4703,17.7936,26.1338,0.8807,4.1224
+raw_target,Non-Ahmedabad Cities (25 Cities),Model F: Release Candidate v2.0,4703,17.8402,26.2076,0.88,3.5828
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Persistence Baseline,4703,18.3974,30.6921,0.8354,0.7257
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Production Model (aqi_model.pkl),4703,17.7968,26.1704,0.8803,4.0711
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Model B: Clean Baseline,4703,17.8144,26.1938,0.8801,4.0374
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Model C: Monthly Ratio Only,4703,17.8052,26.2466,0.8796,3.4602
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Model D: CO-Screened Only,4703,17.8178,26.1259,0.8807,3.9674
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Model E: Target-Capped Only,4703,17.7923,26.1322,0.8807,4.1237
+operational_target_500,Non-Ahmedabad Cities (25 Cities),Model F: Release Candidate v2.0,4703,17.8389,26.2059,0.88,3.584
+raw_target,Ahmedabad Only (GJ001),Persistence Baseline,197,80.736,153.6523,0.5104,-3.5482
+raw_target,Ahmedabad Only (GJ001),Production Model (aqi_model.pkl),197,75.0519,129.2921,0.6533,-5.4208
+raw_target,Ahmedabad Only (GJ001),Model B: Clean Baseline,197,74.6837,128.9619,0.6551,-5.7773
+raw_target,Ahmedabad Only (GJ001),Model C: Monthly Ratio Only,197,74.992,131.3394,0.6422,-3.8687
+raw_target,Ahmedabad Only (GJ001),Model D: CO-Screened Only,197,77.5743,149.2709,0.5379,-38.0952
+raw_target,Ahmedabad Only (GJ001),Model E: Target-Capped Only,197,75.2008,145.517,0.5608,-34.8792
+raw_target,Ahmedabad Only (GJ001),Model F: Release Candidate v2.0,197,79.9491,157.4353,0.4859,-43.5851
+operational_target_500,Ahmedabad Only (GJ001),Persistence Baseline,197,48.3401,79.6232,0.6827,-1.0711
+operational_target_500,Ahmedabad Only (GJ001),Production Model (aqi_model.pkl),197,46.3245,69.0213,0.7616,-0.832
+operational_target_500,Ahmedabad Only (GJ001),Model B: Clean Baseline,197,46.2287,68.8854,0.7625,-1.2503
+operational_target_500,Ahmedabad Only (GJ001),Model C: Monthly Ratio Only,197,45.0843,68.1051,0.7678,-0.8927
+operational_target_500,Ahmedabad Only (GJ001),Model D: CO-Screened Only,197,51.1368,70.4334,0.7517,-11.6577
+operational_target_500,Ahmedabad Only (GJ001),Model E: Target-Capped Only,197,48.3328,67.5628,0.7715,-8.0112
+operational_target_500,Ahmedabad Only (GJ001),Model F: Release Candidate v2.0,197,53.0811,72.3393,0.7381,-16.7171
+raw_target,Delhi,Persistence Baseline,208,32.3077,43.7609,0.8333,1.5481
+raw_target,Delhi,Production Model (aqi_model.pkl),208,25.1758,34.1562,0.8985,-1.1091
+raw_target,Delhi,Model B: Clean Baseline,208,25.1974,34.0854,0.8989,-1.5025
+raw_target,Delhi,Model C: Monthly Ratio Only,208,25.0775,33.7407,0.9009,-1.9382
+raw_target,Delhi,Model D: CO-Screened Only,208,25.5935,34.5671,0.896,-1.0119
+raw_target,Delhi,Model E: Target-Capped Only,208,24.9468,33.3238,0.9034,-1.3223
+raw_target,Delhi,Model F: Release Candidate v2.0,208,24.7919,33.4456,0.9026,-2.0826
+operational_target_500,Delhi,Persistence Baseline,208,32.25,43.6725,0.8338,1.5481
+operational_target_500,Delhi,Production Model (aqi_model.pkl),208,25.0953,34.0192,0.8991,-1.1319
+operational_target_500,Delhi,Model B: Clean Baseline,208,25.1066,33.9193,0.8997,-1.5357
+operational_target_500,Delhi,Model C: Monthly Ratio Only,208,25.0486,33.7276,0.9008,-1.9094
+operational_target_500,Delhi,Model D: CO-Screened Only,208,25.5109,34.4169,0.8968,-1.0368
+operational_target_500,Delhi,Model E: Target-Capped Only,208,24.9179,33.296,0.9034,-1.2934
+operational_target_500,Delhi,Model F: Release Candidate v2.0,208,24.7631,33.4156,0.9027,-2.0537
+raw_target,Lucknow,Persistence Baseline,208,33.5,45.1435,0.7675,1.375
+raw_target,Lucknow,Production Model (aqi_model.pkl),208,29.1535,36.9632,0.8441,13.8898
+raw_target,Lucknow,Model B: Clean Baseline,208,29.3429,37.0278,0.8436,13.9352
+raw_target,Lucknow,Model C: Monthly Ratio Only,208,29.0919,37.3949,0.8405,14.9959
+raw_target,Lucknow,Model D: CO-Screened Only,208,28.8736,36.5809,0.8474,13.2286
+raw_target,Lucknow,Model E: Target-Capped Only,208,29.1924,36.9923,0.8439,13.9091
+raw_target,Lucknow,Model F: Release Candidate v2.0,208,28.8129,36.8681,0.8449,15.0204
+operational_target_500,Lucknow,Persistence Baseline,208,33.5,45.1435,0.7675,1.375
+operational_target_500,Lucknow,Production Model (aqi_model.pkl),208,29.1535,36.9632,0.8441,13.8898
+operational_target_500,Lucknow,Model B: Clean Baseline,208,29.3429,37.0278,0.8436,13.9352
+operational_target_500,Lucknow,Model C: Monthly Ratio Only,208,29.0919,37.3949,0.8405,14.9959
+operational_target_500,Lucknow,Model D: CO-Screened Only,208,28.8736,36.5809,0.8474,13.2286
+operational_target_500,Lucknow,Model E: Target-Capped Only,208,29.1924,36.9923,0.8439,13.9091
+operational_target_500,Lucknow,Model F: Release Candidate v2.0,208,28.8129,36.8681,0.8449,15.0204
+raw_target,Bengaluru,Persistence Baseline,208,7.6442,10.2868,0.6927,0.2885
+raw_target,Bengaluru,Production Model (aqi_model.pkl),208,9.3465,11.939,0.586,5.5117
+raw_target,Bengaluru,Model B: Clean Baseline,208,9.4515,12.1378,0.5721,5.613
+raw_target,Bengaluru,Model C: Monthly Ratio Only,208,9.8497,12.5905,0.5396,6.2427
+raw_target,Bengaluru,Model D: CO-Screened Only,208,9.3486,11.9522,0.5851,5.5155
+raw_target,Bengaluru,Model E: Target-Capped Only,208,9.625,12.4282,0.5514,6.0428
+raw_target,Bengaluru,Model F: Release Candidate v2.0,208,9.8354,12.5537,0.5423,6.181
+operational_target_500,Bengaluru,Persistence Baseline,208,7.6442,10.2868,0.6927,0.2885
+operational_target_500,Bengaluru,Production Model (aqi_model.pkl),208,9.3465,11.939,0.586,5.5117
+operational_target_500,Bengaluru,Model B: Clean Baseline,208,9.4515,12.1378,0.5721,5.613
+operational_target_500,Bengaluru,Model C: Monthly Ratio Only,208,9.8497,12.5905,0.5396,6.2427
+operational_target_500,Bengaluru,Model D: CO-Screened Only,208,9.3486,11.9522,0.5851,5.5155
+operational_target_500,Bengaluru,Model E: Target-Capped Only,208,9.625,12.4282,0.5514,6.0428
+operational_target_500,Bengaluru,Model F: Release Candidate v2.0,208,9.8354,12.5537,0.5423,6.181
+raw_target,Chennai,Persistence Baseline,208,11.2452,17.7337,0.4008,0.0721
+raw_target,Chennai,Production Model (aqi_model.pkl),208,18.2808,27.594,-0.4509,9.2604
+raw_target,Chennai,Model B: Clean Baseline,208,18.5508,28.32,-0.5282,9.4713
+raw_target,Chennai,Model C: Monthly Ratio Only,208,17.4966,30.7144,-0.7976,6.969
+raw_target,Chennai,Model D: CO-Screened Only,208,18.0041,27.4921,-0.4402,9.2862
+raw_target,Chennai,Model E: Target-Capped Only,208,18.3395,28.3721,-0.5339,9.766
+raw_target,Chennai,Model F: Release Candidate v2.0,208,17.0495,29.7999,-0.6921,6.6821
+operational_target_500,Chennai,Persistence Baseline,208,11.2452,17.7337,0.4008,0.0721
+operational_target_500,Chennai,Production Model (aqi_model.pkl),208,18.2808,27.594,-0.4509,9.2604
+operational_target_500,Chennai,Model B: Clean Baseline,208,18.5508,28.32,-0.5282,9.4713
+operational_target_500,Chennai,Model C: Monthly Ratio Only,208,17.4966,30.7144,-0.7976,6.969
+operational_target_500,Chennai,Model D: CO-Screened Only,208,18.0041,27.4921,-0.4402,9.2862
+operational_target_500,Chennai,Model E: Target-Capped Only,208,18.3395,28.3721,-0.5339,9.766
+operational_target_500,Chennai,Model F: Release Candidate v2.0,208,17.0495,29.7999,-0.6921,6.6821
+raw_target,Mumbai,Persistence Baseline,208,16.1875,25.3924,0.8149,0.6106
+raw_target,Mumbai,Production Model (aqi_model.pkl),208,12.8435,19.2271,0.8939,0.4457
+raw_target,Mumbai,Model B: Clean Baseline,208,12.8356,19.1895,0.8943,0.3524
+raw_target,Mumbai,Model C: Monthly Ratio Only,208,12.6203,19.1231,0.895,1.5043
+raw_target,Mumbai,Model D: CO-Screened Only,208,12.8814,19.3034,0.893,0.4393
+raw_target,Mumbai,Model E: Target-Capped Only,208,12.8924,19.1781,0.8944,0.0957
+raw_target,Mumbai,Model F: Release Candidate v2.0,208,12.7833,18.9573,0.8968,1.529
+operational_target_500,Mumbai,Persistence Baseline,208,16.1875,25.3924,0.8149,0.6106
+operational_target_500,Mumbai,Production Model (aqi_model.pkl),208,12.8435,19.2271,0.8939,0.4457
+operational_target_500,Mumbai,Model B: Clean Baseline,208,12.8356,19.1895,0.8943,0.3524
+operational_target_500,Mumbai,Model C: Monthly Ratio Only,208,12.6203,19.1231,0.895,1.5043
+operational_target_500,Mumbai,Model D: CO-Screened Only,208,12.8814,19.3034,0.893,0.4393
+operational_target_500,Mumbai,Model E: Target-Capped Only,208,12.8924,19.1781,0.8944,0.0957
+operational_target_500,Mumbai,Model F: Release Candidate v2.0,208,12.7833,18.9573,0.8968,1.529
+raw_target,Patna,Persistence Baseline,208,24.25,35.305,0.8496,1.5481
+raw_target,Patna,Production Model (aqi_model.pkl),208,28.2677,38.4299,0.8218,-13.2535
+raw_target,Patna,Model B: Clean Baseline,208,28.3731,38.4195,0.8219,-13.2996
+raw_target,Patna,Model C: Monthly Ratio Only,208,29.4254,39.2978,0.8137,-15.938
+raw_target,Patna,Model D: CO-Screened Only,208,28.7274,38.5566,0.8206,-13.7572
+raw_target,Patna,Model E: Target-Capped Only,208,28.3905,38.5937,0.8203,-13.3606
+raw_target,Patna,Model F: Release Candidate v2.0,208,29.4374,39.128,0.8153,-16.2382
+operational_target_500,Patna,Persistence Baseline,208,24.25,35.305,0.8496,1.5481
+operational_target_500,Patna,Production Model (aqi_model.pkl),208,28.2677,38.4299,0.8218,-13.2535
+operational_target_500,Patna,Model B: Clean Baseline,208,28.3731,38.4195,0.8219,-13.2996
+operational_target_500,Patna,Model C: Monthly Ratio Only,208,29.4254,39.2978,0.8137,-15.938
+operational_target_500,Patna,Model D: CO-Screened Only,208,28.7274,38.5566,0.8206,-13.7572
+operational_target_500,Patna,Model E: Target-Capped Only,208,28.3905,38.5937,0.8203,-13.3606
+operational_target_500,Patna,Model F: Release Candidate v2.0,208,29.4374,39.128,0.8153,-16.2382

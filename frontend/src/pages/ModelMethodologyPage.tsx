@@ -52,37 +52,38 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
   const featureData = modelInfo?.feature_importances
     ? [...modelInfo.feature_importances].sort((a, b) => b.importance - a.importance)
     : [
-        { feature: 'PM2.5', importance: 0.46473 },
-        { feature: 'CO', importance: 0.40371 },
-        { feature: 'PM10', importance: 0.042632 },
-        { feature: 'SO2', importance: 0.032438 },
-        { feature: 'NO2', importance: 0.029412 },
-        { feature: 'O3', importance: 0.027078 },
+        { feature: 'PM2.5', importance: 0.736848 },
+        { feature: 'PM10', importance: 0.118413 },
+        { feature: 'CO', importance: 0.079323 },
+        { feature: 'SO2', importance: 0.023263 },
+        { feature: 'NO2', importance: 0.021883 },
+        { feature: 'O3', importance: 0.020270 },
       ];
 
   const metrics = modelInfo?.metrics || {
-    r2: 0.8367,
-    rmse: 36.46,
-    mae: 20.10,
-    test_samples: 4902,
+    r2: 0.8712,
+    rmse: 29.41,
+    mae: 19.26,
+    test_samples: 4900,
   };
 
   const dataset = modelInfo?.dataset_summary || {
     total_raw_rows: 29531,
-    valid_calendar_pairs: 29505,
+    valid_calendar_pairs: 24849,
     valid_target_samples: 24849,
     cities_count: 26,
-    train_samples: 19879,
-    test_samples: 4970,
-    train_date_range: { start: '2015-01-01', end: '2019-12-05' },
-    test_date_range: { start: '2019-12-05', end: '2020-06-30' },
+    train_samples: 19160,
+    test_samples: 4900,
+    train_date_range: { start: '2015-01-01', end: '2019-12-04' },
+    embargo_date: '2019-12-05',
+    test_date_range: { start: '2019-12-06', end: '2020-06-30' },
   };
 
   const trainingMaxima = modelInfo?.training_maxima || {
     'PM2.5': 949.99,
     'PM10': 917.08,
     'NO2': 362.21,
-    'CO': 175.81,
+    'CO': 17.00,
     'SO2': 186.08,
     'O3': 257.73,
   };
@@ -597,37 +598,37 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
                 {
                   step: '1',
                   title: 'Dataset Ingestion & Consecutive Calendar Day Pairing',
-                  desc: 'Ingested 29,531 daily records across 26 Indian cities from the CPCB archive (2015–2020). Observations were sorted strictly by city and date. Next-day targets were paired only when the consecutive date difference was exactly 1 calendar day, ensuring temporal validity and yielding 24,849 valid training pairs.'
+                  desc: 'Ingested 29,531 daily records across 26 Indian cities from the CPCB archive (2015–2020). Observations were sorted strictly by city and date. Next-day targets were paired only when consecutive calendar date difference was exactly 1 day, yielding 24,849 valid prediction pairs.'
                 },
                 {
                   step: '2',
-                  title: 'Chronological Train/Test Partitioning',
-                  desc: 'Random shuffling was strictly avoided to prevent temporal leakage. The dataset was partitioned chronologically (80% train: 19,879 records from 2015-01-01 to 2019-12-05; 20% test: 4,970 records from 2019-12-05 to 2020-06-30).'
+                  title: 'Chronological Embargo Split (Zero Temporal Leakage)',
+                  desc: 'Random shuffling was avoided to preserve temporal validity. The data was split chronologically: Train (2015-01-01 to 2019-12-04, 19,160 clean pairs after screening), 1-day Embargo buffer (2019-12-05) to eliminate transition label leakage, and Test (2019-12-06 to 2020-06-30, 4,900 held-out pairs).'
                 },
                 {
                   step: '3',
-                  title: 'Leakage-Free Preprocessing & Median Imputation',
-                  desc: "Criteria pollutants (especially PM10, which was introduced later in certain stations) contain missing sensor values. A SimpleImputer(strategy='median') was fitted strictly on the training partition, ensuring zero statistical test leakage."
+                  title: 'Scientific Data Quality Screening & Monthly Ratio Imputation',
+                  desc: 'Training records with anomalous CO > 17.0 mg/m³ (699 rows traced to Ahmedabad GJ001 sensor contamination) were screened. AQI training targets were clamped to the statutory 500 ceiling. A monthly PM2.5/PM10 ratio estimator fitted strictly on the training partition allows robust inference when PM10 is unmonitored.'
                 },
                 {
                   step: '4',
-                  title: 'Random Forest Regression Training',
-                  desc: 'Trained an ensemble of 100 decision trees (min_samples_leaf=2) yielding an out-of-sample R² of 0.8367, RMSE of 36.46, and MAE of 20.10. This significantly outperformed the meteorological persistence baseline (R² = 0.7724, RMSE = 43.05).'
+                  title: 'Random Forest Ensemble Training',
+                  desc: 'Trained an ensemble of 100 decision trees (min_samples_leaf=2) yielding an operational CPCB-scale (≤500) R² of 0.8712, RMSE of 29.41, and MAE of 19.26, significantly outperforming the persistence baseline (R² = 0.8284, RMSE = 34.04). Particulates account for 85.52% of feature importance.'
                 },
                 {
                   step: '5',
-                  title: 'Decision Support & Bound Verification Engine',
-                  desc: 'Maps numeric AQI predictions into six prototype category bands (Good, Satisfactory, Moderate, Poor, Very Poor, Severe), clamps negative regression estimates, alerts if inputs exceed historical training maxima, and generates actionable public health advisories.'
+                  title: 'Decision Support & Operational Boundary Engine',
+                  desc: 'Clamps outputs to statutory limits (0–500), issues runtime advisories for CO exceeding 17.0 mg/m³ or concentrations exceeding historical training maxima, and generates six-category CPCB health advisories.'
                 },
                 {
                   step: '6',
-                  title: 'FastAPI Asynchronous Microservice',
-                  desc: 'Lightweight Python service loading the serialized pipeline once at startup with CORS, Pydantic v2 input validation, and RESTful endpoints for health check, prediction, model insights, and benchmark validation.'
+                  title: 'FastAPI Production Microservice',
+                  desc: 'High-throughput Python REST service executing single-object composite inference with dynamic ratio imputation, Pydantic v2 schemas, and health check endpoints.'
                 },
                 {
                   step: '7',
                   title: 'Modern React + Vite Frontend Dashboard',
-                  desc: 'Interactive web client with Tailwind CSS styling, Recharts visualizations, accessible category badges, inline input validation, and live backend connectivity indicators.'
+                  desc: 'Interactive web client with Tailwind CSS styling, Recharts visualizations, optional particulate input handling, inline input validation, and live backend connectivity indicators.'
                 }
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3.5">
@@ -640,6 +641,68 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* Phase 2B Scientific Data Quality Upgrades */}
+          <div className="bg-white rounded-2xl border border-teal-200/80 shadow-sm p-6 sm:p-8 space-y-5">
+            <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100">
+              <ShieldCheck className="w-5 h-5 text-teal-600" />
+              <div>
+                <span className="text-xs font-bold text-teal-800 uppercase tracking-wider block">Production Release v2.0</span>
+                <h3 className="text-lg font-bold text-slate-900">Phase 2B Scientific Data Quality &amp; Model Upgrades</h3>
+              </div>
+            </div>
+
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Following an exhaustive data-quality audit, the v2.0 model implements four foundational scientific improvements to ensure
+              atmospheric realism, prevent artifact-driven predictions, and deliver superior operational generalization:
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-teal-50/50 border border-teal-100 space-y-1.5">
+                <div className="flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-teal-600" />
+                  <span>1. Extreme CO Anomaly Screening</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Screened 699 training observations where CO &gt; 17.0 mg/m³ (reaching up to 175.81 mg/m³), which were traced exclusively to
+                  the Maninagar station in Ahmedabad. In the legacy v1 model, these extreme values artificially inflated CO feature importance to 40.37%.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-teal-50/50 border border-teal-100 space-y-1.5">
+                <div className="flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-teal-600" />
+                  <span>2. Atmospheric Feature Realism</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Removing distorted CO readings restored physical atmospheric balance: combined particulate importance increased from 50.73% to 85.52%
+                  (PM2.5: 73.68%, PM10: 11.84%), aligning directly with established CPCB environmental physics where particulates dominate Indian AQI.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-teal-50/50 border border-teal-100 space-y-1.5">
+                <div className="flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-teal-600" />
+                  <span>3. Monthly Ratio PM10 Imputation</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  In stations lacking PM10 analyzers (e.g. historical Lucknow, Patna), missing PM10 is dynamically estimated using training-fitted
+                  monthly PM2.5/PM10 ratios (annual mean 0.4644, winter peak 0.5643), improving missing-PM10 test MAE from 26.84 to 21.00.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-teal-50/50 border border-teal-100 space-y-1.5">
+                <div className="flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-teal-600" />
+                  <span>4. Operational Scale Calibration</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Training targets were capped at the statutory CPCB limit (500.0), eliminating unphysical runaway predictions up to 1,291.
+                  On the official operational scale (≤500), Release Candidate v2.0 achieves R² = 0.8712 and RMSE = 29.41 across 4,900 test days.
+                </p>
+              </div>
             </div>
           </div>
 

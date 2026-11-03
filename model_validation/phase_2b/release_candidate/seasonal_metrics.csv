@@ -1,0 +1,43 @@
+Evaluation_Target,Subset,Model,N,MAE,RMSE,R2,Mean_Bias
+raw_target,Winter Season,Persistence Baseline,1972,32.106,60.3494,0.7138,0.5857
+raw_target,Winter Season,Production Model (aqi_model.pkl),1972,26.0272,47.0997,0.8257,4.6967
+raw_target,Winter Season,Model B: Clean Baseline,1972,26.0127,46.9956,0.8264,4.645
+raw_target,Winter Season,Model C: Monthly Ratio Only,1972,26.4141,47.8471,0.8201,3.6849
+raw_target,Winter Season,Model D: CO-Screened Only,1972,26.2952,52.6779,0.7819,1.3702
+raw_target,Winter Season,Model E: Target-Capped Only,1972,26.0164,51.2725,0.7934,1.6133
+raw_target,Winter Season,Model F: Release Candidate v2.0,1972,26.6504,54.6218,0.7656,-0.0287
+operational_target_500,Winter Season,Persistence Baseline,1972,29.1192,45.2091,0.7918,0.5857
+operational_target_500,Winter Season,Production Model (aqi_model.pkl),1972,23.4092,34.3944,0.8795,4.91
+operational_target_500,Winter Season,Model B: Clean Baseline,1972,23.421,34.3799,0.8796,4.8512
+operational_target_500,Winter Season,Model C: Monthly Ratio Only,1972,23.6872,34.6177,0.8779,3.7462
+operational_target_500,Winter Season,Model D: CO-Screened Only,1972,23.8958,34.8453,0.8763,3.7559
+operational_target_500,Winter Season,Model E: Target-Capped Only,1972,23.5808,33.965,0.8825,4.0489
+operational_target_500,Winter Season,Model F: Release Candidate v2.0,1972,24.2148,35.1566,0.8741,2.4069
+raw_target,Summer Season,Persistence Baseline,2205,13.942,25.326,0.7547,0.6195
+raw_target,Summer Season,Production Model (aqi_model.pkl),2205,16.9078,28.1619,0.6967,2.7081
+raw_target,Summer Season,Model B: Clean Baseline,2205,16.9191,28.2198,0.6955,2.6596
+raw_target,Summer Season,Model C: Monthly Ratio Only,2205,16.6069,28.087,0.6983,2.4278
+raw_target,Summer Season,Model D: CO-Screened Only,2205,16.9373,28.1034,0.698,2.5966
+raw_target,Summer Season,Model E: Target-Capped Only,2205,16.9381,28.6907,0.6852,2.906
+raw_target,Summer Season,Model F: Release Candidate v2.0,2205,16.8832,28.8825,0.681,2.501
+operational_target_500,Summer Season,Persistence Baseline,2205,13.7134,22.9591,0.7732,0.8408
+operational_target_500,Summer Season,Production Model (aqi_model.pkl),2205,16.675,25.5018,0.7202,2.9251
+operational_target_500,Summer Season,Model B: Clean Baseline,2205,16.6861,25.5245,0.7197,2.8765
+operational_target_500,Summer Season,Model C: Monthly Ratio Only,2205,16.3708,25.253,0.7256,2.6416
+operational_target_500,Summer Season,Model D: CO-Screened Only,2205,16.7123,25.2383,0.7259,2.8215
+operational_target_500,Summer Season,Model E: Target-Capped Only,2205,16.7131,25.658,0.7167,3.1309
+operational_target_500,Summer Season,Model F: Release Candidate v2.0,2205,16.6582,25.4951,0.7203,2.726
+raw_target,Monsoon Season,Persistence Baseline,723,11.5975,25.9379,0.5686,0.2669
+raw_target,Monsoon Season,Production Model (aqi_model.pkl),723,13.6831,23.3056,0.6517,3.942
+raw_target,Monsoon Season,Model B: Clean Baseline,723,13.7055,23.3495,0.6504,3.9179
+raw_target,Monsoon Season,Model C: Monthly Ratio Only,723,13.5689,23.052,0.6593,3.9909
+raw_target,Monsoon Season,Model D: CO-Screened Only,723,13.6898,23.1797,0.6555,3.7815
+raw_target,Monsoon Season,Model E: Target-Capped Only,723,13.6168,23.0562,0.6592,4.0493
+raw_target,Monsoon Season,Model F: Release Candidate v2.0,723,13.6517,23.2273,0.6541,3.88
+operational_target_500,Monsoon Season,Persistence Baseline,723,11.5975,25.9379,0.5686,0.2669
+operational_target_500,Monsoon Season,Production Model (aqi_model.pkl),723,13.6831,23.3056,0.6517,3.942
+operational_target_500,Monsoon Season,Model B: Clean Baseline,723,13.7055,23.3495,0.6504,3.9179
+operational_target_500,Monsoon Season,Model C: Monthly Ratio Only,723,13.5689,23.052,0.6593,3.9909
+operational_target_500,Monsoon Season,Model D: CO-Screened Only,723,13.6898,23.1797,0.6555,3.7815
+operational_target_500,Monsoon Season,Model E: Target-Capped Only,723,13.6168,23.0562,0.6592,4.0493
+operational_target_500,Monsoon Season,Model F: Release Candidate v2.0,723,13.6517,23.2273,0.6541,3.88

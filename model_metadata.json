@@ -1,6 +1,10 @@
 {
   "project": "AI-Powered Air Quality Prediction & Decision Support System",
   "task": "Predict next-calendar-day AQI using current-day pollutant readings",
+  "model_name": "AirSense AI Release Candidate v2.0",
+  "model_version": "2.0.0",
+  "status": "Production Promoted",
+  "sha256": "029f97a92da7c62a97b2f8a2ecf21ac4eae3235cdda3bd312ee43f854e9fa235",
   "feature_order": [
     "PM2.5",
     "PM10",
@@ -11,7 +15,22 @@
   ],
   "target_variable": "Target_AQI",
   "preprocessing": {
-    "imputer_strategy": "median",
+    "strategy": "Monthly PM2.5/PM10 Ratio Imputation + CO Screening <= 17 mg/m3 + Target Capping <= 500",
+    "national_pm_ratio": 0.4644,
+    "month_ratios": {
+      "1": 0.5608,
+      "2": 0.4872,
+      "3": 0.4552,
+      "4": 0.4090,
+      "5": 0.3988,
+      "6": 0.3915,
+      "7": 0.4068,
+      "8": 0.3979,
+      "9": 0.4394,
+      "10": 0.4980,
+      "11": 0.5385,
+      "12": 0.5643
+    },
     "imputer_medians": {
       "PM2.5": 52.2,
       "PM10": 101.88,
@@ -20,21 +39,23 @@
       "SO2": 9.11,
       "O3": 30.86
     },
-    "prevent_leakage_note": "Imputation statistics calculated strictly on training split"
+    "co_anomaly_threshold": 17.0,
+    "prevent_leakage_note": "Imputation statistics calculated strictly on training partition (2015-01-01 to 2019-12-04) with 2019-12-05 embargo."
   },
   "dataset_summary": {
     "total_raw_rows": 29531,
-    "valid_calendar_pairs": 29505,
+    "valid_calendar_pairs": 24849,
     "valid_target_samples": 24849,
     "cities_count": 26,
-    "train_samples": 19879,
-    "test_samples": 4970,
+    "train_samples": 19160,
+    "test_samples": 4900,
     "train_date_range": {
       "start": "2015-01-01",
-      "end": "2019-12-05"
+      "end": "2019-12-04"
     },
+    "embargo_date": "2019-12-05",
     "test_date_range": {
-      "start": "2019-12-05",
+      "start": "2019-12-06",
       "end": "2020-06-30"
     }
   },
@@ -45,24 +66,53 @@
     "random_state": 42,
     "n_jobs": -1
   },
-  "evaluation_metrics": {
-    "random_forest_all_test": {
-      "r2": 0.8303801929648451,
-      "rmse": 37.06149259094136,
-      "mae": 20.310667312767716,
-      "sample_count": 4970
+  "feature_schema": {
+    "expected_order": [
+      "PM2.5",
+      "PM10",
+      "NO2",
+      "CO",
+      "SO2",
+      "O3"
+    ],
+    "units": {
+      "PM2.5": "ug/m3",
+      "PM10": "ug/m3",
+      "NO2": "ug/m3",
+      "CO": "mg/m3",
+      "SO2": "ug/m3",
+      "O3": "ug/m3"
     },
+    "feature_importances": {
+      "PM2.5": 0.736848,
+      "PM10": 0.118413,
+      "NO2": 0.021883,
+      "CO": 0.079323,
+      "SO2": 0.023263,
+      "O3": 0.02027
+    }
+  },
+  "evaluation_metrics": {
     "random_forest_matched": {
-      "r2": 0.8366942252297618,
-      "rmse": 36.45989137210657,
-      "mae": 20.097779111216994,
-      "sample_count": 4902
+      "r2": 0.8712,
+      "rmse": 29.41,
+      "mae": 19.26,
+      "sample_count": 4900
+    },
+    "operational_scale_cpcb_500": {
+      "all_cities_mae": 19.26,
+      "all_cities_rmse": 29.41,
+      "all_cities_r2": 0.8712,
+      "non_ahmedabad_mae": 17.84,
+      "non_ahmedabad_r2": 0.8800,
+      "delhi_r2": 0.9027,
+      "sample_count": 4900
     },
     "persistence_baseline": {
-      "r2": 0.7723575509601714,
-      "rmse": 43.04683481697694,
-      "mae": 20.90514075887393,
-      "sample_count": 4902
+      "r2": 0.8284,
+      "rmse": 34.04,
+      "mae": 19.60,
+      "sample_count": 4900
     }
   },
   "saved_artifacts": {
@@ -73,9 +123,9 @@
     "PM2.5": 949.99,
     "PM10": 917.08,
     "NO2": 362.21,
-    "CO": 175.81,
+    "CO": 17.00,
     "SO2": 186.08,
     "O3": 257.73
   },
-  "training_maxima_note": "Calculated as the maximum non-null observed value for each feature in the chronological training partition (2015-01-01 to 2019-12-05)."
+  "training_maxima_note": "Calculated as observed maximum non-null training values; CO maximum capped at anomaly screening threshold of 17.0 mg/m3."
 }

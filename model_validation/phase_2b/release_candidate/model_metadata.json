@@ -1,0 +1,51 @@
+{
+  "model_name": "AirSense AI Release Candidate v2.0",
+  "model_version": "2.0.0",
+  "status": "Release Candidate",
+  "trained_timestamp": "2026-11-04T00:01:52.557383",
+  "sha256": "029f97a92da7c62a97b2f8a2ecf21ac4eae3235cdda3bd312ee43f854e9fa235",
+  "training_data": {
+    "source": "Central Pollution Control Board (CPCB) India Continuous Ambient Air Quality Data",
+    "train_window": "2015-01-01 to 2019-12-04",
+    "embargo_date": "2019-12-05",
+    "evaluation_window": "2019-12-06 to 2020-06-30",
+    "usable_train_pairs": 19200,
+    "usable_test_pairs": 4900
+  },
+  "feature_schema": {
+    "expected_order": [
+      "PM2.5",
+      "PM10",
+      "NO2",
+      "CO",
+      "SO2",
+      "O3"
+    ],
+    "units": {
+      "PM2.5": "ug/m3",
+      "PM10": "ug/m3",
+      "NO2": "ug/m3",
+      "CO": "mg/m3",
+      "SO2": "ug/m3",
+      "O3": "ug/m3"
+    },
+    "feature_importances": {
+      "PM2.5": 0.736848,
+      "PM10": 0.118413,
+      "NO2": 0.021883,
+      "CO": 0.079323,
+      "SO2": 0.023263,
+      "O3": 0.02027
+    }
+  },
+  "evaluation_metrics": {
+    "operational_scale_cpcb_500": {
+      "all_cities_mae": 19.2558,
+      "all_cities_rmse": 29.4877,
+      "all_cities_r2": 0.8712,
+      "non_ahmedabad_mae": 17.8389,
+      "non_ahmedabad_r2": 0.88,
+      "delhi_r2": 0.9027
+    }
+  }
+}

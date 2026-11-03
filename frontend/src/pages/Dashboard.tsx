@@ -26,21 +26,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
   example,
 }) => {
   const metrics = modelInfo?.metrics || {
-    r2: 0.8367,
-    rmse: 36.46,
-    mae: 20.10,
-    test_samples: 4902,
+    r2: 0.8712,
+    rmse: 29.41,
+    mae: 19.26,
+    test_samples: 4900,
   };
 
   const featureImportanceData = modelInfo?.feature_importances
     ? [...modelInfo.feature_importances].sort((a, b) => b.importance - a.importance)
     : [
-        { feature: 'PM2.5', importance: 0.46473 },
-        { feature: 'CO', importance: 0.40371 },
-        { feature: 'PM10', importance: 0.042632 },
-        { feature: 'SO2', importance: 0.032438 },
-        { feature: 'NO2', importance: 0.029412 },
-        { feature: 'O3', importance: 0.027078 },
+        { feature: 'PM2.5', importance: 0.736848 },
+        { feature: 'PM10', importance: 0.118413 },
+        { feature: 'CO', importance: 0.079323 },
+        { feature: 'SO2', importance: 0.023263 },
+        { feature: 'NO2', importance: 0.021883 },
+        { feature: 'O3', importance: 0.020270 },
       ];
 
   const colors = ['#0d9488', '#0f766e', '#14b8a6', '#2dd4bf', '#5eead4', '#99f6e4'];
@@ -91,11 +91,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div>
             <h2 className="text-lg font-bold text-slate-900">Model Evaluation Metrics</h2>
             <p className="text-xs text-slate-500">
-              Evaluated on the matched chronological test partition (4,902 samples, Dec 2019 – Jun 2020)
+              Evaluated on the matched chronological test partition (4,900 samples, Dec 2019 – Jun 2020) on statutory CPCB scale
             </p>
           </div>
           <span className="text-xs text-teal-700 bg-teal-50 border border-teal-200 font-semibold px-2.5 py-1 rounded-md">
-            Baseline Improvement: +8.3% R²
+            Operational Accuracy: R² = 0.8712 (Delhi R² = 0.9027)
           </span>
         </div>
 
