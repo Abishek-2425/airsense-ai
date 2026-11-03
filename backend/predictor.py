@@ -68,6 +68,11 @@ def load_pipeline() -> Pipeline:
     if not hasattr(regressor, 'feature_importances_'):
         raise ModelLoadError("Fitted regressor does not expose 'feature_importances_'.")
 
+    # Ensure forward compatibility across scikit-learn versions for SimpleImputer
+    imputer = pipeline.named_steps.get('imputer')
+    if imputer is not None and not hasattr(imputer, '_fill_dtype') and hasattr(imputer, '_fit_dtype'):
+        imputer._fill_dtype = imputer._fit_dtype
+
     return pipeline
 
 
