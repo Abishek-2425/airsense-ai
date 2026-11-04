@@ -77,6 +77,17 @@ export const App: React.FC = () => {
   };
 
   const handleUseExampleInPredictor = () => {
+    let exampleMonth = String(new Date().getMonth() + 1);
+    if (example?.date) {
+      const parts = example.date.split('-');
+      if (parts.length >= 2) {
+        const parsedM = parseInt(parts[1], 10);
+        if (!isNaN(parsedM) && parsedM >= 1 && parsedM <= 12) {
+          exampleMonth = String(parsedM);
+        }
+      }
+    }
+
     if (example?.input_values) {
       setPrefillValues({
         pm25: example.input_values.pm25.toString(),
@@ -85,6 +96,7 @@ export const App: React.FC = () => {
         co: example.input_values.co.toString(),
         so2: example.input_values.so2.toString(),
         o3: example.input_values.o3.toString(),
+        month: exampleMonth,
       });
     } else {
       setPrefillValues({
@@ -94,6 +106,7 @@ export const App: React.FC = () => {
         co: '0.73',
         so2: '13.65',
         o3: '34.85',
+        month: exampleMonth,
       });
     }
     setCurrentTab('predict');

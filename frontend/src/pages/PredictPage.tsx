@@ -7,7 +7,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   Activity,
-  Info
+  Info,
+  Calendar,
 } from 'lucide-react';
 import type { PredictRequest, PredictResponse, ModelInfoResponse, ExampleResponse, FormState } from '../types';
 import { api } from '../services/api';
@@ -42,6 +43,38 @@ interface PollutantConfig {
   optional: boolean;
 }
 
+const getCurrentMonthString = (): string => String(new Date().getMonth() + 1);
+
+const MONTH_OPTIONS = [
+  { value: '1', label: 'January' },
+  { value: '2', label: 'February' },
+  { value: '3', label: 'March' },
+  { value: '4', label: 'April' },
+  { value: '5', label: 'May' },
+  { value: '6', label: 'June' },
+  { value: '7', label: 'July' },
+  { value: '8', label: 'August' },
+  { value: '9', label: 'September' },
+  { value: '10', label: 'October' },
+  { value: '11', label: 'November' },
+  { value: '12', label: 'December' },
+];
+
+const MONTH_NAMES: Record<number, string> = {
+  1: 'January',
+  2: 'February',
+  3: 'March',
+  4: 'April',
+  5: 'May',
+  6: 'June',
+  7: 'July',
+  8: 'August',
+  9: 'September',
+  10: 'October',
+  11: 'November',
+  12: 'December',
+};
+
 const DEFAULT_EXAMPLE: FormState = {
   pm25: '33.17',
   pm10: '108.22',
@@ -49,6 +82,7 @@ const DEFAULT_EXAMPLE: FormState = {
   co: '0.73',
   so2: '13.65',
   o3: '34.85',
+  month: getCurrentMonthString(),
 };
 
 export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, prefilledValues }) => {
@@ -177,6 +211,14 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
       }
     });
 
+    if (formData.month) {
+      const monthNum = parseInt(formData.month, 10);
+      if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+        newErrors.month = 'Month must be an integer between 1 and 12';
+        isValid = false;
+      }
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -189,6 +231,10 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
 
     setSubmitting(true);
     try {
+      const selectedMonth = formData.month
+        ? parseInt(formData.month, 10)
+        : (new Date().getMonth() + 1);
+
       const payload: PredictRequest = {
         pm25: formData.pm25.trim() ? parseFloat(formData.pm25) : undefined,
         pm10: formData.pm10.trim() ? parseFloat(formData.pm10) : undefined,
@@ -196,7 +242,7 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
         co: parseFloat(formData.co),
         so2: parseFloat(formData.so2),
         o3: parseFloat(formData.o3),
-        month: new Date().getMonth() + 1,
+        month: selectedMonth,
       };
 
       const res = await api.predict(payload);
@@ -209,6 +255,17 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
   };
 
   const handleLoadExample = () => {
+    let exampleMonth = getCurrentMonthString();
+    if (example?.date) {
+      const parts = example.date.split('-');
+      if (parts.length >= 2) {
+        const parsedM = parseInt(parts[1], 10);
+        if (!isNaN(parsedM) && parsedM >= 1 && parsedM <= 12) {
+          exampleMonth = String(parsedM);
+        }
+      }
+    }
+
     if (example?.input_values) {
       setFormData({
         pm25: example.input_values.pm25.toString(),
@@ -217,9 +274,13 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
         co: example.input_values.co.toString(),
         so2: example.input_values.so2.toString(),
         o3: example.input_values.o3.toString(),
+        month: exampleMonth,
       });
     } else {
-      setFormData(DEFAULT_EXAMPLE);
+      setFormData({
+        ...DEFAULT_EXAMPLE,
+        month: getCurrentMonthString(),
+      });
     }
     setErrors({});
     setApiError(null);
@@ -233,6 +294,7 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
       co: '',
       so2: '',
       o3: '',
+      month: getCurrentMonthString(),
     });
     setErrors({});
     setApiError(null);
@@ -288,6 +350,47 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Month of measurement selector */}
+            <div className="space-y-1.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div className="flex items-center justify-between">
+                <label htmlFor="month-select" className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-teal-600" />
+                  <span>Month of measurement</span>
+                  <span className="text-[10px] font-medium text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200/60">
+                    Ratio Factor
+                  </span>
+                </label>
+                <span className="text-[10px] text-slate-400">
+                  Current calendar month by default
+                </span>
+              </div>
+              <div className="relative">
+                <select
+                  id="month-select"
+                  value={formData.month || getCurrentMonthString()}
+                  onChange={(e) => handleInputChange('month', e.target.value)}
+                  className={`w-full px-3 py-2 text-sm rounded-lg border transition-all focus:outline-none focus:ring-2 cursor-pointer ${
+                    errors.month
+                      ? 'border-red-400 bg-red-50/50 focus:ring-red-200 text-red-900'
+                      : 'border-slate-300 bg-white focus:border-teal-500 focus:ring-teal-100 text-slate-800'
+                  }`}
+                >
+                  {MONTH_OPTIONS.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {errors.month ? (
+                <p className="text-[11px] text-red-600 font-medium">{errors.month}</p>
+              ) : (
+                <p className="text-[11px] text-slate-500">
+                  Used by the backend pipeline for month-aware PM2.5 / PM10 ratio imputation if either particulate value is omitted.
+                </p>
+              )}
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {pollutantConfigs.map((p) => {
                 const val = formData[p.id] || '';
@@ -478,16 +581,26 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
               {/* Submitted Inputs Summary */}
               <div className="pt-2 border-t border-slate-100">
                 <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-2">
-                  Submitted Pollutant Inputs
+                  Submitted Inputs
                 </span>
-                <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-1.5 text-center text-xs">
+                  <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
+                    <span className="text-[10px] text-slate-400 block">Month</span>
+                    <span className="font-semibold text-slate-700">
+                      {result.input_values.month ? (MONTH_NAMES[result.input_values.month] || result.input_values.month) : '—'}
+                    </span>
+                  </div>
                   <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
                     <span className="text-[10px] text-slate-400 block">PM2.5</span>
-                    <span className="font-semibold text-slate-700">{result.input_values.pm25}</span>
+                    <span className="font-semibold text-slate-700">
+                      {result.input_values.pm25 !== null && result.input_values.pm25 !== undefined ? result.input_values.pm25 : 'Auto'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
                     <span className="text-[10px] text-slate-400 block">PM10</span>
-                    <span className="font-semibold text-slate-700">{result.input_values.pm10}</span>
+                    <span className="font-semibold text-slate-700">
+                      {result.input_values.pm10 !== null && result.input_values.pm10 !== undefined ? result.input_values.pm10 : 'Auto'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 p-1.5 rounded border border-slate-200">
                     <span className="text-[10px] text-slate-400 block">NO₂</span>
