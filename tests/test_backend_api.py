@@ -128,7 +128,7 @@ class TestBackendAPI(unittest.TestCase):
         response = client.post("/predict", json=payload)
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertTrue(any("exceeds statutory ambient threshold" in w for w in data["warnings"]))
+        self.assertTrue(any("project-defined CO screening threshold" in w for w in data["warnings"]))
 
     def test_08_predict_negative_pollutant_rejected(self):
         """Verify negative pollutant values are strictly rejected with HTTP 422."""
