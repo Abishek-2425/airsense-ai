@@ -13,7 +13,7 @@
 
 This document represents the definitive technical closeout report for **Phase 2B** of the AirSense AI project.
 
-Over the course of Phase 1, Phase 1B, Phase 2A, and Phase 2B, AirSense AI has been transformed from an experimental academic prototype exhibiting severe sensor-artifact reliance and unphysical target extrapolation into a **scientifically rigorous, mathematically sound, leakage-free, and production-ready environmental decision support system**.
+Over the course of Phase 1, Phase 1B, Phase 2A, and Phase 2B, AirSense AI has been transformed from an early prototype exhibiting severe sensor-artifact reliance and unphysical target extrapolation into a **scientifically rigorous, mathematically sound, leakage-free, and production-ready environmental decision support system**.
 
 ### Key Milestone Achievements:
 1. **Sensor-Contamination Remediation**: Confirmed that extreme Carbon Monoxide observations ($>17.0\ \text{mg/m}^3$, reaching $175.81\ \text{mg/m}^3$) originated exclusively from a single continuous monitoring station (GJ001, Maninagar, Ahmedabad). Screening these 699 distorted training observations eliminated an artificial $40.37\%$ CO feature weighting.
@@ -148,7 +148,7 @@ npm run dev
 
 ---
 
-## 8. Academic & Environmental Conclusion
+## 8. Scientific & Environmental Conclusion
 
 AirSense AI demonstrates that modern machine learning models applied to statutory environmental sensor datasets must be audited for localized station contamination and domain physical validity.
 

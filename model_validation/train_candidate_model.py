@@ -1,6 +1,6 @@
 """
 Candidate Model Training and Comparative Validation Pipeline
-AirSense AI - Environmental Studies Project
+AirSense AI - Air Quality Forecasting Pipeline
 
 This script implements a scientifically controlled improvement cycle:
 1. Strict Date Separation with 1-Day Embargo (Train <= 2019-12-04, Test >= 2019-12-06).

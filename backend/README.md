@@ -1,6 +1,6 @@
 # AI-Powered Air Quality Prediction & Decision Support System - Backend API (Release v2.0)
 
-Production backend implementation of the AirSense AI Environmental Studies (EVS) capstone project. This service provides a robust FastAPI backend that serves next-calendar-day Air Quality Index (AQI) predictions and environmental decision-support guidance from current-day pollutant measurements.
+Production backend implementation of the AirSense AI system. This service provides a robust FastAPI backend that serves next-calendar-day Air Quality Index (AQI) predictions and environmental decision-support guidance from current-day pollutant measurements.
 
 ---
 
@@ -9,7 +9,7 @@ Production backend implementation of the AirSense AI Environmental Studies (EVS)
 - **Next-Day AQI Regression**: Predicts the next calendar day's AQI from current-day concentrations of six key criteria pollutants (`PM2.5`, `PM10`, `NO2`, `CO`, `SO2`, `O3`).
 - **Flexible Particulate Input with Seasonal Ratio Imputation**: Supports missing `PM10` or `PM2.5` via training-derived monthly ratio estimation ($\widehat{\text{PM}}_{10} = \text{PM}_{2.5} / r_{\text{month}}$), maintaining high accuracy even when stations lack coarse particulate analyzers.
 - **Pre-trained Composite Model**: Loads `AirSenseCompositeModel` (`AirSensePreprocessor` + `RandomForestRegressor`) once at application startup.
-- **Rule-Based Decision Support**: Maps numeric AQI predictions into statutory CPCB prototype bands with deterministic half-up rounding and returns targeted environmental and public health recommendations.
+- **Rule-Based Decision Support**: Maps numeric AQI predictions into standard CPCB category bands with deterministic half-up rounding and returns targeted environmental and public health recommendations.
 - **Input Validation & Bound Verification**: Validates numeric bounds, prevents non-finite and negative inputs, alerts users if concentrations exceed training maxima, and issues runtime warnings for CO observations exceeding statutory ambient screening levels ($17.0\ \text{mg/m}^3$).
 - **Transparency & Diagnostics**: Exposes genuine model information, feature importances (restored particulate weight: 85.52%), training bounds, and documented historical test examples via RESTful endpoints.
 
@@ -99,7 +99,7 @@ Evaluated across the 4,900 held-out chronological test observations (`2019-12-06
 
 ---
 
-## 7. Prototype AQI Category Bands & Rules
+## 7. Operational AQI Category Bands & Rules
 
 | AQI Band | Category | Summary Description |
 | :--- | :--- | :--- |

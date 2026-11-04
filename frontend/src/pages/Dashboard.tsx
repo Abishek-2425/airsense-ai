@@ -53,7 +53,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-300 text-xs font-semibold tracking-wide uppercase">
             <Cpu className="w-3.5 h-3.5" />
-            <span>Final-Year Environmental Studies Project</span>
+            <span>Operational ML Decision Support</span>
           </div>
 
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
@@ -345,7 +345,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <div className="bg-amber-50/80 border border-amber-200 p-4 rounded-xl flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="text-xs text-amber-900 leading-relaxed">
-            <strong>Important Academic Prototype Disclaimer:</strong> This application predicts future AQI as a continuous regression
+            <strong>Operational Decision Support Advisory:</strong> This application predicts future AQI as a continuous machine-learning regression
             estimate trained on historical CPCB records. Category bands are applied to this estimate for decision support. This does not
             represent an official regulatory CPCB calculation from real-time sub-indices, nor does it provide personalized medical advice.
           </div>

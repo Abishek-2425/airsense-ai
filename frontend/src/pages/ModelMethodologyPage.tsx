@@ -15,7 +15,7 @@ import {
   AlertTriangle,
   Layers,
   BookOpen,
-  School,
+  Compass,
   ShieldAlert
 } from 'lucide-react';
 import type { ModelInfoResponse, ExampleResponse, MethodologySection } from '../types';
@@ -549,10 +549,10 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-5">
             <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
               <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700">
-                <School className="w-5 h-5" />
+                <Compass className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-xs font-bold text-teal-800 uppercase tracking-wider block">Academic Project Overview</span>
+                <span className="text-xs font-bold text-teal-800 uppercase tracking-wider block">System Architecture &amp; Overview</span>
                 <h3 className="text-lg font-bold text-slate-900">
                   AI-Powered Air Quality Prediction &amp; Decision Support System
                 </h3>
@@ -560,11 +560,11 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
             </div>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              This system was developed as a final-year Environmental Studies (EVS) capstone project. Rapid industrialization,
-              vehicular emissions, and seasonal agricultural burning contribute to severe ambient air pollution across Indian urban
-              corridors. Conventional air monitoring systems report historical or current AQI reactively. This project investigates
-              the feasibility of training a machine learning regression pipeline to predict next-calendar-day AQI using multi-pollutant
-              sensor readings, enabling municipal authorities and sensitive populations to take proactive mitigation measures.
+              AirSense AI is an environmental machine learning forecasting and decision support platform. Rapid industrialization,
+              vehicular emissions, and seasonal meteorological shifts contribute to severe ambient air pollution across Indian urban
+              corridors. Conventional air monitoring systems report historical or current AQI reactively. AirSense AI investigates
+              and implements a machine learning regression pipeline to predict next-calendar-day AQI using multi-pollutant
+              sensor readings, enabling municipal authorities, facilities managers, and sensitive populations to take proactive mitigation measures.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
@@ -722,8 +722,8 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               In contrast, <strong>AirSense AI is a predictive forecasting system</strong>. It does not calculate same-day AQI from
               piecewise breakpoint tables; rather, it trains an empirical machine learning regression model to forecast the
-              <em>next-calendar-day</em> overall AQI value based on the synergistic pattern of today's six criteria pollutants. The prototype
-              bands are used strictly to categorize this numeric estimate for intuitive decision support.
+              <em>next-calendar-day</em> overall AQI value based on the synergistic pattern of today's six criteria pollutants. Standard operational
+              category bands are used to categorize this numeric estimate for intuitive decision support.
             </p>
           </div>
 
@@ -734,10 +734,10 @@ export const ModelMethodologyPage: React.FC<ModelMethodologyPageProps> = ({
               <span>Statutory &amp; Medical Disclaimer</span>
             </div>
             <p className="text-xs text-amber-900 leading-relaxed">
-              This system is an academic research demonstration developed for an undergraduate Environmental Studies curriculum.
-              Predictions are statistical approximations based on historical data patterns and should not be used as official statutory
-              certifications, regulatory compliance audits, or clinical medical advice. Individuals experiencing acute respiratory or
-              cardiovascular symptoms must consult certified healthcare professionals or refer to official government bulletins.
+              AirSense AI provides environmental forecasting and decision support based on statistical machine learning models.
+              Predictions are statistical approximations derived from historical data patterns and are designed to complement, not replace,
+              official statutory monitoring networks or clinical medical guidance. Individuals experiencing acute respiratory or
+              cardiovascular symptoms must consult certified healthcare professionals or refer to official regulatory bulletins.
             </p>
           </div>
         </section>

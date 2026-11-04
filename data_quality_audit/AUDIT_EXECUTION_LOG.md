@@ -154,7 +154,7 @@ All six required deliverables have been compiled, verified, and placed in `data_
 2. `data_quality_audit/POLLUTANT_UNIT_VERIFICATION.md`: Exhaustive measurement unit verification, statutory CPCB standards, and the forensic resolution of the Ahmedabad $\text{CO}$ anomaly.
 3. `data_quality_audit/DATA_QUALITY_SUMMARY.csv`: Column-by-column empirical statistics (count, missingness, mean, median, percentiles, IQR bounds, zero counts, negative counts).
 4. `data_quality_audit/CITY_DATA_QUALITY.csv`: City-wise coverage, temporal spans, missing calendar days, pollutant missing percentages, and extreme event counts across all 26 cities.
-5. `data_quality_audit/AUDIT_RECOMMENDATIONS.md`: Prioritized engineering roadmap dividing issues into mandatory pre-validation fixes, pipeline enhancements, and acceptable academic limitations.
+5. `data_quality_audit/AUDIT_RECOMMENDATIONS.md`: Prioritized engineering roadmap dividing issues into mandatory pre-validation fixes, pipeline enhancements, and acceptable environmental modeling limitations.
 6. `data_quality_audit/AUDIT_EXECUTION_LOG.md`: Complete audit execution history, command ledger, and safety certifications.
 
 ---

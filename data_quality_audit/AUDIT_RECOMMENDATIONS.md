@@ -16,7 +16,7 @@ Based on the empirical findings documented in `DATASET_QUALITY_AUDIT.md` and `PO
 Recommendations are divided into:
 1. **Tier 1 (Mandatory Pre-Validation Fixes)**: Critical scientific and architectural discrepancies that must be addressed or formally resolved before final model validation.
 2. **Tier 2 (Methodological & Pipeline Enhancements)**: Data engineering and model retraining improvements to eliminate feature distortion.
-3. **Tier 3 (Acceptable Academic Limitations)**: Known real-world environmental phenomena that can be legitimately documented as boundaries rather than refactored in code.
+3. **Tier 3 (Acceptable Environmental Modeling Limitations)**: Known real-world environmental phenomena that can be legitimately documented as boundaries rather than refactored in code.
 
 ---
 
@@ -49,7 +49,7 @@ Recommendations are divided into:
 | T07 | Embed 26-City Disaggregated   | MEDIUM   | Frontend UI           | Next Sprint (T2)   | Low (3 hours)        |
 |     | Table in Methodology Page     |          | (ModelMethodology.tsx)|                    |                      |
 +-----+-------------------------------+----------+-----------------------+--------------------+----------------------+
-| T08 | Document Chennai Sea-Breeze & | LOW      | Academic Report       | Documentation (T3) | Very Low (1 hour)    |
+| T08 | Document Chennai Sea-Breeze & | LOW      | Technical Report      | Documentation (T3) | Very Low (1 hour)    |
 |     | Post-Monsoon Burning Gaps     |          | (Methodology Section) |                    |                      |
 +-----+-------------------------------+----------+-----------------------+--------------------+----------------------+
 ```
@@ -124,7 +124,7 @@ Recommendations are divided into:
 ### T07: Embed 26-City Disaggregated Table in Frontend Methodology View
 - **Problem**: The headline metric ($R^2 = 0.8367$) masks localized failure in Chennai ($R^2 = -0.4509$) and extreme RMSE in Ahmedabad ($132.14$).
 - **Action**: Embed the complete 26-city disaggregated evaluation table generated in `candidate_metadata.json` into Section A of `frontend/src/pages/ModelMethodologyPage.tsx`.
-- **Expected Outcome**: Full academic transparency that preempts hostile examiner scrutiny during capstone viva defenses.
+- **Expected Outcome**: Full scientific transparency regarding geographical performance and model generalization bounds.
 - **Affected Files**: `frontend/src/pages/ModelMethodologyPage.tsx`.
 
 ---

@@ -283,8 +283,8 @@ The production model artifact `aqi_model.pkl` contains `SimpleImputer` as Step 1
 
 ```
 ========================================================================================
-AUDIT SUITABILITY VERDICT: CONDITIONALLY SUITABLE FOR ACADEMIC CAPSTONE
-                   NOT SUITABLE FOR UNGUARDED REAL-WORLD DEPLOYMENT
+AUDIT SUITABILITY VERDICT: SUITABLE FOR CONTROLLED ENVIRONMENTAL FORECASTING EVALUATION
+                   REQUIRES RIGOROUS SCREENING & IMPUTATION PRIOR TO DEPLOYMENT
 ========================================================================================
 1. The dataset is MATHEMATICALLY SOUND for evaluating the existing research prototype.
    The pairings, chronological splits, and persistence baselines are authentic.

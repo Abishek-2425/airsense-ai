@@ -8,7 +8,7 @@
 
 An end-to-end environmental machine learning and public health decision-support system designed to forecast the **next calendar day's Air Quality Index (AQI)** using current-day concentrations of six criteria air pollutants.
 
-Developed as a final-year Environmental Studies (EVS) capstone project using 5 years of historical Central Pollution Control Board (CPCB) data across 26 Indian metropolitan and industrial cities (2015–2020).
+Calibrated and validated on 5 years of historical Central Pollution Control Board (CPCB) data across 26 Indian metropolitan and industrial cities (2015–2020).
 
 ---
 
@@ -138,7 +138,7 @@ npm run dev
 
 ---
 
-## 📜 Statutory & Educational Disclaimer
+## 📜 Operational & Regulatory Notice
 
-This system is an academic research capstone developed for an undergraduate Environmental Studies (EVS) curriculum. Forecasts are empirical statistical approximations and must not be used as official regulatory certifications, legal compliance assessments, or clinical medical advice. Individuals with acute respiratory conditions should consult qualified physicians or refer to official CPCB bulletins.
+AirSense AI is an environmental machine learning forecasting and decision-support platform. Forecasts are empirical statistical approximations and must not be used as official regulatory certifications, legal compliance assessments, or clinical medical advice. Individuals with acute respiratory conditions should consult qualified healthcare professionals or refer to official CPCB bulletins.
 

@@ -55,7 +55,7 @@ class PredictResponse(BaseModel):
     """
     predicted_aqi: float = Field(..., description="Displayed operational next-day AQI (clamped to 0-500)")
     raw_predicted_aqi: float = Field(..., description="Raw model regression output before display clamping")
-    category: str = Field(..., description="AQI category assigned according to prototype bands")
+    category: str = Field(..., description="AQI category assigned according to standard operational bands")
     recommendations: List[str] = Field(..., description="Concise rule-based advisory recommendations")
     warnings: List[str] = Field(default_factory=list, description="List of warning messages for out-of-range inputs or estimation")
     input_values: Dict[str, Any] = Field(..., description="Submitted pollutant input readings")

@@ -173,7 +173,7 @@ async def get_test_example():
 async def predict_next_day_aqi_endpoint(payload: PredictRequest):
     """
     Predicts next-calendar-day AQI from current-day pollutant readings,
-    assigns a prototype category, checks training bounds, and generates recommendations.
+    assigns an operational category, checks training bounds, and generates recommendations.
     Applies monthly particulate ratio estimation when PM10 or PM2.5 is omitted.
     """
     try:

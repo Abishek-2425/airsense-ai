@@ -44,7 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="font-bold text-lg text-slate-900 tracking-tight">AirSense AI</span>
                 <span className="hidden sm:inline-block text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">
-                  EVS Project
+                  Environmental Intelligence
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 hidden md:block">

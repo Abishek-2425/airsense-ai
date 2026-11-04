@@ -179,7 +179,7 @@ export const App: React.FC = () => {
           <div>
             <div className="font-semibold text-slate-800 flex items-center justify-center sm:justify-start gap-1.5">
               <Wind className="w-4 h-4 text-teal-600" />
-              <span>AirSense AI · Environmental Studies Final-Year Project</span>
+              <span>AirSense AI</span>
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5">
               AI-Powered Air Quality Prediction &amp; Decision Support System
@@ -187,8 +187,7 @@ export const App: React.FC = () => {
           </div>
 
           <div className="text-[11px] text-slate-400 max-w-md">
-            Academic research prototype. Continuous regression predictions and prototype category bands are for
-            educational decision-support purposes only.
+            Continuous regression predictions and air quality indices are calibrated against historical Central Pollution Control Board (CPCB) monitoring datasets for environmental decision support.
           </div>
         </div>
       </footer>

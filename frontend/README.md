@@ -1,16 +1,16 @@
 # AirSense AI — Frontend Dashboard
 
-React + Vite + TypeScript frontend for the **AI-Powered Air Quality Prediction & Decision Support System** (Environmental Studies Final-Year Capstone Project).
+React + Vite + TypeScript frontend for the **AI-Powered Air Quality Prediction & Decision Support System**.
 
 ---
 
 ## 1. Overview & Features
 
-- **Dashboard**: Real-time FastAPI connectivity status, core model performance metrics (R²: 0.8367, RMSE: 36.46, MAE: 20.10, N=4,902), feature-importance preview, benchmark case study card, and system architecture workflow.
+- **Dashboard**: Real-time FastAPI connectivity status, core model performance metrics (R²: 0.8712, RMSE: 29.41, MAE: 19.26, N=4,900), feature-importance preview, benchmark case study card, and system architecture workflow.
 - **AQI Predictor**: Interactive input form for six criteria pollutants (`PM2.5`, `PM10`, `NO2`, `CO`, `SO2`, `O3`) with inline validation, range warnings, demonstration preset loader, visual AQI scale meter (0–500+), category badges, and rule-based decision support advisories.
 - **Model Insights**: In-depth analytics including Gini impurity feature importances visualized via Recharts, observed training partition maxima, and chronological dataset partitioning details.
-- **Historical Example**: Ground-truth benchmark evaluation study from Visakhapatnam (`2020-06-22` -> `2020-06-23`), displaying observed AQI (95.0), actual next-day AQI (100.0), model prediction (112.63), and absolute error (12.63).
-- **About & Methodology**: Academic context, pipeline workflow, comparison between empirical regression prediction and official CPCB sub-index breakpoint calculation, and statutory disclaimers.
+- **Historical Example**: Ground-truth benchmark evaluation study from Visakhapatnam (`2020-06-22` -> `2020-06-23`), displaying observed AQI (95.0), actual next-day AQI (100.0), model prediction (108.50), and absolute error.
+- **About & Methodology**: System architecture, pipeline workflow, comparison between empirical regression prediction and official CPCB sub-index breakpoint calculation, and statutory disclaimers.
 
 ---
 
@@ -59,10 +59,10 @@ npm run build
 
 ---
 
-## 4. Academic Disclaimers
+## 4. Operational Advisory & Disclaimers
 
 > **CPCB Formula vs. Regression Estimate**:
-> The model outputs an estimated AQI by regression. The specified AQI bands are used only to label that estimate for this prototype; this is not a direct CPCB AQI calculation from pollutant sub-indices.
+> The model outputs an estimated AQI by regression. The specified AQI bands are used to label that estimate for decision support; this is not a direct CPCB statutory calculation from real-time pollutant sub-indices.
 >
 > **Statutory & Medical Notice**:
-> This prototype is for educational decision-support purposes only and does not provide statutory regulatory certification or personalized medical advice.
+> This system provides environmental forecasting and decision support based on statistical models, and does not provide statutory regulatory certification or personalized medical advice.

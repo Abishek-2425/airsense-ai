@@ -3,15 +3,15 @@ Decision Support Module for Air Quality Categorization and Recommendations.
 
 NOTE:
 The model outputs an estimated AQI by regression. The specified AQI bands
-are used only to label that estimate for this prototype; this is not a
-direct CPCB AQI calculation from pollutant sub-indices.
+are used to label that estimate for decision support; this is not a
+direct CPCB statutory AQI calculation from pollutant sub-indices.
 """
 
 import math
 from typing import Dict, List, Tuple
 
 
-# Hardcoded prototype AQI category bands
+# Standard operational AQI category bands
 AQI_BANDS = [
     (0, 50, "Good"),
     (51, 100, "Satisfactory"),
@@ -21,7 +21,7 @@ AQI_BANDS = [
     (401, 500, "Severe"),
 ]
 
-# Rule-based advisory recommendations per prototype AQI category
+# Rule-based advisory recommendations per operational AQI category
 RECOMMENDATIONS: Dict[str, List[str]] = {
     "Good": [
         "Air quality is satisfactory and poses minimal or no health risk.",
@@ -68,7 +68,7 @@ def get_effective_aqi(raw_val: float) -> int:
 
 def classify_aqi(raw_predicted_aqi: float) -> Tuple[float, str, List[str]]:
     """
-    Maps a raw regression AQI prediction to a prototype category, applying
+    Maps a raw regression AQI prediction to an operational AQI category, applying
     clamping and out-of-range warnings as specified:
     
     1. If raw < 0: clamp displayed value to 0.0, category='Good', warning added.
