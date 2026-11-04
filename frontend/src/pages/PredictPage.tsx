@@ -640,7 +640,7 @@ export const PredictPage: React.FC<PredictPageProps> = ({ modelInfo, example, pr
                 </div>
                 <p className="text-[11px] text-slate-500">
                   Clicking "Load Benchmark Sample" loads historical Visakhapatnam readings which produce approximately{' '}
-                  <span className="font-bold text-slate-800">112.63 (Moderate)</span>.
+                  <span className="font-bold text-slate-800">110.8 (Moderate)</span>.
                 </p>
               </div>
             </div>
